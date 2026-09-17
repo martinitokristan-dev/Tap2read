@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollReveal } from "@/components/shared/ScrollReveal";
-import { ReadText } from "@/components/shared/ReadText";
 import { toast } from "sonner";
 
 interface HeroSectionProps {
@@ -106,15 +105,12 @@ export function HeroSection({ studentName, onStudentRegister }: HeroSectionProps
         </div>
 
         <div className="container relative z-10 max-w-3xl mx-auto px-4 sm:px-8 text-center my-auto">
-            {/* Much Bigger Welcome Title on Screen 2 */}
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black font-jolly tracking-tight text-slate-900 mb-4 drop-shadow-xs">
-              Welcome to Tap<span className="text-blue-600">2</span><ReadText uppercase />! 👋
-            </h2>
-
             {/* Comprehensive Platform Description (Relocated to Screen 2) */}
-            <p className="text-base sm:text-lg text-slate-800 max-w-2xl mx-auto leading-relaxed mb-8 font-medium">
-              Tap2Read is an interactive reading platform designed for early grade learners. Explore visual sight words, illustrated stories, teacher-led video lessons, and interactive Canva activities to build strong reading foundations.
-            </p>
+            <div className="max-w-2xl mx-auto mb-8 sm:mb-10 bg-white/90 backdrop-blur-md border-2 border-amber-200/80 rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-lg shadow-amber-500/5">
+              <p className="text-lg sm:text-xl md:text-2xl text-slate-800 leading-relaxed font-bold tracking-tight font-jolly drop-shadow-xs">
+                Tap2Read is an interactive reading platform designed for early grade learners. Explore visual sight words, illustrated stories, teacher-led video lessons, and interactive Canva activities to build strong reading foundations.
+              </p>
+            </div>
 
             {/* Learner Name Prompt Card (Replaced 'Student Information' with 'What is your name?') */}
             {!studentName ? (

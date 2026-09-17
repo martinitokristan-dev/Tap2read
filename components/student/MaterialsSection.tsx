@@ -86,32 +86,32 @@ export function MaterialsSection({
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-5">
+              <div className="flex flex-wrap justify-center gap-6 sm:gap-8 max-w-5xl mx-auto">
                 {sightWords.map((item) => (
                   <Link
                     key={item.id}
                     href={`/sightwords/${item.id}`}
-                    className="block group focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-3xl"
+                    className="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)] max-w-xs sm:max-w-sm block group focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-3xl"
                   >
-                    <Card className="overflow-hidden border-2 border-sky-100 group-hover:border-blue-500 bg-white shadow-md group-hover:shadow-xl group-hover:-translate-y-1 transition-all duration-300 rounded-3xl h-full flex flex-col justify-between">
-                      <div className="relative aspect-square w-full bg-sky-50 overflow-hidden border-b border-sky-100">
+                    <Card className="aspect-square overflow-hidden border-2 border-sky-200 group-hover:border-blue-500 bg-white shadow-lg group-hover:shadow-2xl group-hover:-translate-y-2 transition-all duration-300 rounded-3xl flex flex-col justify-between">
+                      <div className="relative flex-1 w-full bg-sky-50 overflow-hidden border-b border-sky-100 flex items-center justify-center">
                         <img
                           src={item.imageUrl}
                           alt={item.word || "Sight word card"}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                       </div>
-                      <CardContent className="p-3.5 text-center bg-gradient-to-b from-white to-sky-50/50">
+                      <CardContent className="p-4 sm:p-5 text-center bg-gradient-to-b from-white to-sky-50/60 shrink-0">
                         {item.word ? (
-                          <p className="text-lg font-black font-jolly text-slate-900 group-hover:text-blue-600 transition-colors capitalize">
+                          <p className="text-2xl sm:text-3xl font-black font-jolly text-slate-900 group-hover:text-blue-600 transition-colors capitalize tracking-wide">
                             {item.word}
                           </p>
                         ) : (
-                          <p className="text-sm font-bold font-jolly text-slate-700 group-hover:text-blue-600 transition-colors">
+                          <p className="text-lg sm:text-xl font-bold font-jolly text-slate-700 group-hover:text-blue-600 transition-colors">
                             Picture Card
                           </p>
                         )}
-                        <span className="text-[11px] font-bold text-sky-600 uppercase tracking-wider block mt-0.5">
+                        <span className="text-xs sm:text-sm font-bold text-sky-600 uppercase tracking-wider block mt-1">
                           ⭐ Flashcard
                         </span>
                       </CardContent>
