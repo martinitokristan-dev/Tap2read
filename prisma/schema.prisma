@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Teacher {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(100)
+  email     String   @unique @db.VarChar(150)
+  password  String   @db.VarChar(255)
+  createdAt DateTime @default(now())
+
+  @@map("teachers")
+}
+
+model SightWord {
+  id           Int      @id @default(autoincrement())
+  word         String   @db.VarChar(100)
+  imageUrl     String   @db.VarChar(500)
+  displayOrder Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  @@map("sight_words")
+}
+
+model ShortStory {
+  id           Int      @id @default(autoincrement())
+  title        String   @db.VarChar(200)
+  coverImage   String   @db.VarChar(500)
+  content      String   @db.Text
+  displayOrder Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  @@map("short_stories")
+}
+
+model Video {
+  id           Int      @id @default(autoincrement())
+  title        String   @db.VarChar(200)
+  description  String   @db.Text
+  videoUrl     String   @db.VarChar(500)
+  thumbnailUrl String   @db.VarChar(500)
+  displayOrder Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  @@map("videos")
+}
+
+model Activity {
+  id           Int      @id @default(autoincrement())
+  title        String   @db.VarChar(200)
+  description  String   @db.Text
+  imageUrl     String   @db.VarChar(500)
+  canvaLink    String   @db.VarChar(500)
+  displayOrder Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  @@map("activities")
+}
+
+model Researcher {
+  id           Int    @id @default(autoincrement())
+  fullName     String @db.VarChar(150)
+  role         String @db.VarChar(200)
+  photoUrl     String @db.VarChar(500)
+  description  String @db.Text
+  displayOrder Int    @default(0)
+
+  @@map("researchers")
+}
+
+model StudentSession {
+  id           Int      @id @default(autoincrement())
+  fullName     String   @db.VarChar(150)
+  sessionToken String   @unique @db.VarChar(255)
+  createdAt    DateTime @default(now())
+
+  @@map("student_sessions")
+}
+
+model ContactMessage {
+  id          Int      @id @default(autoincrement())
+  senderName  String   @db.VarChar(150)
+  senderEmail String   @db.VarChar(150)
+  message     String   @db.Text
+  sentAt      DateTime @default(now())
+
+  @@map("contact_messages")
+}

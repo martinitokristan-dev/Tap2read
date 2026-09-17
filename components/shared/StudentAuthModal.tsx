@@ -1,0 +1,130 @@
+"use client";
+
+import React, { useState } from "react";
+import { User, ArrowRight, Loader2, BookOpen } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+
+interface StudentAuthModalProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSuccess: (fullName: string) => void;
+}
+
+export function StudentAuthModal({
+  open,
+  onOpenChange,
+  onSuccess,
+}: StudentAuthModalProps) {
+  const [fullName, setFullName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = fullName.trim();
+
+    if (!trimmed) {
+      setError("Please enter your full name before continuing.");
+      return;
+    }
+
+    if (trimmed.length < 2) {
+      setError("Full name must be at least 2 letters.");
+      return;
+    }
+
+    setError(null);
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/student/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fullName: trimmed }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to register. Please try again.");
+      }
+
+      localStorage.setItem("tap2read_student_name", trimmed);
+      toast.success(`Welcome, ${trimmed}. You have joined the session.`);
+      onSuccess(trimmed);
+      onOpenChange(false);
+    } catch (err: any) {
+      setError(err.message || "An unexpected error occurred.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md rounded-3xl border-2 border-blue-200 bg-white p-6 shadow-2xl">
+        <DialogHeader className="text-center sm:text-center">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600 text-white mb-2 shadow-md">
+            <BookOpen className="h-6 w-6" />
+          </div>
+          <DialogTitle className="text-2xl font-black font-jolly text-slate-900">
+            What is your name? 😊
+          </DialogTitle>
+          <DialogDescription className="text-xs sm:text-sm text-slate-500 mt-1">
+            Type your name below so we can start your reading adventure! 🌟
+          </DialogDescription>
+        </DialogHeader>
+
+        <form onSubmit={handleSubmit} className="space-y-4 pt-2">
+          <div className="space-y-2 text-left">
+            <div className="relative">
+              <Input
+                id="student-name"
+                placeholder="Type your name here..."
+                value={fullName}
+                onChange={(e) => {
+                  setFullName(e.target.value);
+                  if (error) setError(null);
+                }}
+                className="h-12 text-base text-center font-bold font-jolly bg-sky-50/50 border-2 border-blue-200 focus-visible:ring-blue-400 rounded-2xl placeholder:font-normal placeholder:text-slate-400"
+                autoFocus
+              />
+            </div>
+            {error && (
+              <p className="text-xs text-destructive font-bold font-jolly text-center">{error}</p>
+            )}
+          </div>
+
+          <Button
+            type="submit"
+            size="default"
+            className="w-full h-12 text-base font-bold font-jolly rounded-2xl bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer"
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                Starting Adventure...
+              </>
+            ) : (
+              <>
+                Let&apos;s Read!
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </>
+            )}
+          </Button>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
