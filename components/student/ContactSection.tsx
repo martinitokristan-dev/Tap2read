@@ -51,9 +51,9 @@ export function ContactSection() {
       toast.success("Thank you. Your message has been sent to our team.");
       setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (err: any) {
-      // Fallback: Submit directly to FormSubmit.co if API route encounters an issue
+      // Fallback: Submit directly to FormSubmit.co using the verified token
       try {
-        const directRes = await fetch("https://formsubmit.co/ajax/bobis.sb@stud.pnu.edu.ph", {
+        const directRes = await fetch("https://formsubmit.co/ajax/5e291b5d57d61cc10d531e140118a814", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

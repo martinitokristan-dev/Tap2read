@@ -16,10 +16,15 @@ export const mailService = {
     }
 
     // 2. Send via FormSubmit.co
-    const recipientEmail = process.env.FORMSUBMIT_EMAIL || 'bobis.sb@stud.pnu.edu.ph';
-    const formsubmitUrl = `https://formsubmit.co/ajax/${recipientEmail}`;
+    // Use the verified FormSubmit token provided in the activation email.
+    // This permanently binds to bobis.sb@stud.pnu.edu.ph and never asks for activation again.
+    const rawTarget = process.env.FORMSUBMIT_EMAIL || '5e291b5d57d61cc10d531e140118a814';
+    const targetToken = rawTarget === 'bobis.sb@stud.pnu.edu.ph' ? '5e291b5d57d61cc10d531e140118a814' : rawTarget;
+    const formsubmitUrl = `https://formsubmit.co/ajax/${targetToken}`;
     try {
-      const siteUrl = process.env.NEXTAUTH_URL || 'https://tap2read.vercel.app';
+      const siteUrl = process.env.NEXTAUTH_URL && !process.env.NEXTAUTH_URL.includes('localhost')
+        ? process.env.NEXTAUTH_URL
+        : 'https://tap2read.vercel.app';
       const response = await fetch(formsubmitUrl, {
         method: 'POST',
         headers: {
@@ -38,10 +43,11 @@ export const mailService = {
         }),
       });
 
-      if (response.ok) {
+      const responseData = await response.json().catch(() => null);
+      if (response.ok && (responseData?.success === 'true' || responseData?.success === true)) {
         return { success: true, provider: 'formsubmit' };
       }
-      console.warn('[Tap2Read Contact] FormSubmit responded with non-200 status:', response.status);
+      console.warn('[Tap2Read Contact] FormSubmit responded with:', responseData || response.status);
     } catch (formsubmitError) {
       console.error('[Tap2Read Contact] Failed to send to FormSubmit:', formsubmitError);
     }
