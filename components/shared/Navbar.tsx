@@ -25,9 +25,6 @@ export function Navbar({ studentName, onOpenNameModal }: NavbarProps) {
             <span className="text-xl font-black font-jolly tracking-tight text-slate-900 group-hover:opacity-95 transition-opacity">
               Tap<span className="text-blue-600">2</span><ReadText uppercase />
             </span>
-            <span className="text-[10px] text-blue-600 -mt-1 font-bold font-jolly tracking-wider uppercase">
-              Reading Adventure
-            </span>
           </div>
         </Link>
 

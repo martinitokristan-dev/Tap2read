@@ -51,9 +51,9 @@ export function ContactSection() {
       toast.success("Thank you. Your message has been sent to our team.");
       setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (err: any) {
-      // Fallback: Submit directly to Formspree if API route encounters an issue
+      // Fallback: Submit directly to FormSubmit.co if API route encounters an issue
       try {
-        const directRes = await fetch("https://formspree.io/f/xrpbgnbj", {
+        const directRes = await fetch("https://formsubmit.co/ajax/bobis.sb@stud.pnu.edu.ph", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -62,8 +62,10 @@ export function ContactSection() {
           body: JSON.stringify({
             name: formData.name,
             email: formData.email,
-            subject: formData.subject || "Tap2Read Inquiry",
+            subject: formData.subject || 'General Inquiry',
             message: formData.message,
+            _subject: 'New Tap2Read Message!',
+            _replyto: formData.email,
           }),
         });
 

@@ -15,32 +15,38 @@ export const mailService = {
       console.warn('[Tap2Read Contact] Could not save message to database:', dbError);
     }
 
-    // 2. Send via Formspree
-    const formspreeUrl = process.env.FORMSPREE_URL || 'https://formspree.io/f/xrpbgnbj';
+    // 2. Send via FormSubmit.co
+    const recipientEmail = process.env.FORMSUBMIT_EMAIL || 'bobis.sb@stud.pnu.edu.ph';
+    const formsubmitUrl = `https://formsubmit.co/ajax/${recipientEmail}`;
     try {
-      const response = await fetch(formspreeUrl, {
+      const siteUrl = process.env.NEXTAUTH_URL || 'https://tap2read.vercel.app';
+      const response = await fetch(formsubmitUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Origin': siteUrl,
+          'Referer': `${siteUrl}/#contact`,
         },
         body: JSON.stringify({
           name: data.senderName,
           email: data.senderEmail,
-          subject: data.subject || 'Tap2Read Inquiry',
+          subject: data.subject || 'General Inquiry',
           message: data.message,
+          _subject: 'New Tap2Read Message!',
+          _replyto: data.senderEmail,
         }),
       });
 
       if (response.ok) {
-        return { success: true, provider: 'formspree' };
+        return { success: true, provider: 'formsubmit' };
       }
-      console.warn('[Tap2Read Contact] Formspree responded with non-200 status:', response.status);
-    } catch (formspreeError) {
-      console.error('[Tap2Read Contact] Failed to send to Formspree:', formspreeError);
+      console.warn('[Tap2Read Contact] FormSubmit responded with non-200 status:', response.status);
+    } catch (formsubmitError) {
+      console.error('[Tap2Read Contact] Failed to send to FormSubmit:', formsubmitError);
     }
 
-    // 3. Fallback to Gmail/Nodemailer if credentials exist
+    // 3. Direct Nodemailer Email with the exact key-value document structure
     const hasGmailConfig =
       process.env.GMAIL_USER &&
       !process.env.GMAIL_USER.includes('your-gmail') &&
@@ -53,35 +59,22 @@ export const mailService = {
           from: `"Tap2Read Contact Form" <${process.env.GMAIL_USER}>`,
           to: process.env.CONTACT_RECEIVER_EMAIL || process.env.GMAIL_USER,
           replyTo: data.senderEmail,
-          subject: data.subject ? `${data.subject} — Tap2Read` : `New Message from ${data.senderName} — Tap2Read`,
+          subject: data.subject ? `[Tap2Read] ${data.subject}` : `[Tap2Read] Message from ${data.senderName}`,
           html: `
-            <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-              <h2 style="color: #4A90D9;">New Message from Tap2Read</h2>
-              <table style="width:100%; border-collapse:collapse;">
-                <tr>
-                  <td style="padding:8px; font-weight:bold; width:120px;">Name:</td>
-                  <td style="padding:8px;">${data.senderName}</td>
-                </tr>
-                <tr style="background:#f5f5f5;">
-                  <td style="padding:8px; font-weight:bold;">Email:</td>
-                  <td style="padding:8px;">
-                    <a href="mailto:${data.senderEmail}">${data.senderEmail}</a>
-                  </td>
-                </tr>
-                ${data.subject ? `<tr><td style="padding:8px; font-weight:bold;">Subject:</td><td style="padding:8px;">${data.subject}</td></tr>` : ''}
-                <tr>
-                  <td style="padding:8px; font-weight:bold; vertical-align:top;">Message:</td>
-                  <td style="padding:8px;">${data.message.replace(/\n/g, '<br/>')}</td>
-                </tr>
-              </table>
-              <p style="color:#888; font-size:12px; margin-top:24px;">
-                Sent via Tap2Read contact form
-              </p>
+            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0; padding: 24px; color: #1e293b; line-height: 1.6;">
+              <p style="margin: 0 0 10px 0; font-size: 15px;"><strong>Sender Name:</strong> ${data.senderName}</p>
+              <p style="margin: 0 0 10px 0; font-size: 15px;"><strong>Sender Email:</strong> <a href="mailto:${data.senderEmail}" style="color: #2563eb; text-decoration: none;">${data.senderEmail}</a></p>
+              <p style="margin: 0 0 16px 0; font-size: 15px;"><strong>Subject:</strong> ${data.subject || 'General Inquiry'}</p>
+              
+              <hr style="border: none; border-top: 1px solid #cbd5e1; margin: 20px 0;" />
+              
+              <p style="margin: 0 0 8px 0; font-size: 15px; font-weight: bold;">Message:</p>
+              <div style="font-size: 14px; color: #334155; line-height: 1.7; white-space: pre-wrap;">${data.message}</div>
             </div>
           `,
         });
       } catch (mailError) {
-        console.error('[Tap2Read Contact] Nodemailer fallback failed:', mailError);
+        console.error('[Tap2Read Contact] Direct email failed:', mailError);
       }
     }
   },
