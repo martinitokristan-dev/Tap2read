@@ -51,6 +51,31 @@ export function ContactSection() {
       toast.success("Thank you. Your message has been sent to our team.");
       setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (err: any) {
+      // Fallback: Submit directly to Formspree if API route encounters an issue
+      try {
+        const directRes = await fetch("https://formspree.io/f/xrpbgnbj", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+          },
+          body: JSON.stringify({
+            name: formData.name,
+            email: formData.email,
+            subject: formData.subject || "Tap2Read Inquiry",
+            message: formData.message,
+          }),
+        });
+
+        if (directRes.ok) {
+          setSubmitted(true);
+          toast.success("Thank you. Your message has been sent to our team.");
+          setFormData({ name: "", email: "", subject: "", message: "" });
+          return;
+        }
+      } catch {
+        // Continue to show error toast
+      }
       toast.error(err.message || "Could not send message. Please try again later.");
     } finally {
       setLoading(false);

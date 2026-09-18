@@ -19,9 +19,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(errorResponse('Invalid email address'), { status: 400 });
     }
 
-    const message = subject ? `[Subject: ${subject}]\n\n${rawMessage}` : rawMessage;
+    const message = rawMessage;
 
-    await mailService.sendContactEmail({ senderName, senderEmail, message });
+    await mailService.sendContactEmail({ senderName, senderEmail, message, subject });
     return NextResponse.json(successResponse(null, 'Message sent successfully'), { status: 200 });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Failed to send message';

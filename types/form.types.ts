@@ -45,6 +45,7 @@ export interface ContactForm {
   senderName: string;
   senderEmail: string;
   message: string;
+  subject?: string;
 }
 
 // ─── Field Validation Error Map ───────────────────────────────────────────────
