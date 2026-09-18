@@ -61,9 +61,11 @@ export default function TeacherLoginPage() {
 
         <Card className="border-border rounded-lg shadow-sm">
           <CardHeader className="text-left pb-4">
-            <div className="flex h-9 w-9 items-center justify-center rounded-md bg-secondary text-foreground mb-2">
-              <Lock className="h-4 w-4" />
-            </div>
+            <img
+              src="/images/tap2read-logo.png"
+              alt="Tap2Read Logo"
+              className="h-12 w-12 object-contain rounded-xl shadow-xs mb-3"
+            />
             <CardTitle className="text-lg font-semibold text-foreground">
               Teacher Portal Login
             </CardTitle>

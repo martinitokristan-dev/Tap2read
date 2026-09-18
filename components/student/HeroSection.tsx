@@ -8,6 +8,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollReveal } from "@/components/shared/ScrollReveal";
 import { toast } from "sonner";
+import {
+  PaintStrokeBanner,
+  OrganicBlobBanner,
+  DoodleStar,
+  DoodleSparkle,
+} from "@/components/shared/HandcraftedElements";
 
 interface HeroSectionProps {
   studentName: string | null;
@@ -105,24 +111,44 @@ export function HeroSection({ studentName, onStudentRegister }: HeroSectionProps
         </div>
 
         <div className="container relative z-10 max-w-3xl mx-auto px-4 sm:px-8 text-center my-auto">
-            {/* Comprehensive Platform Description (Relocated to Screen 2) */}
-            <div className="max-w-2xl mx-auto mb-8 sm:mb-10 bg-white/90 backdrop-blur-md border-2 border-amber-200/80 rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-lg shadow-amber-500/5">
-              <p className="text-lg sm:text-xl md:text-2xl text-slate-800 leading-relaxed font-bold tracking-tight font-jolly drop-shadow-xs">
-                Tap2Read is an interactive reading platform designed for early grade learners. Explore visual sight words, illustrated stories, teacher-led video lessons, and interactive Canva activities to build strong reading foundations.
-              </p>
-            </div>
+            {/* Section 1: Handcrafted Paint-Stroke Banner for Introduction */}
+            <PaintStrokeBanner className="max-w-2xl mb-8 sm:mb-10">
+              {/* Content (Normal text with Tap2Read highlighted) */}
+              <div className="relative z-10 text-center py-2 px-1 sm:px-3">
+                <p className="text-base sm:text-lg md:text-xl text-slate-700 font-normal font-sans leading-relaxed">
+                  <span className="text-xl sm:text-2xl md:text-3xl font-black font-jolly text-blue-600 mr-1.5 inline-block">
+                    Tap2Read
+                  </span>
+                  is an interactive reading platform for early learners.
+                  <br className="hidden sm:inline" />
+                  {" "}Explore sight words, illustrated stories, video lessons, and fun activities that build strong reading skills.
+                </p>
+              </div>
+            </PaintStrokeBanner>
 
-            {/* Learner Name Prompt Card (Replaced 'Student Information' with 'What is your name?') */}
+            {/* Photo 1: Handcrafted Scrapbook-Style Name Prompt Card */}
             {!studentName ? (
-              <Card className="max-w-md mx-auto border-2 border-blue-200 shadow-xl bg-white/95 backdrop-blur rounded-3xl overflow-hidden">
-                <CardContent className="p-6 sm:p-8 text-center">
+              <div className="max-w-md mx-auto handcrafted-card border-2 border-sky-300 shadow-xl bg-white/95 backdrop-blur relative overflow-visible">
+                {/* Handcrafted Washi Tape Accent at Top */}
+                <div
+                  aria-hidden="true"
+                  className="absolute -top-3 left-1/2 -translate-x-1/2 w-28 h-6 bg-amber-200/90 border border-dashed border-amber-300 rounded-xs shadow-xs transform -rotate-1 pointer-events-none select-none z-20 flex items-center justify-between px-2 text-[8px] text-amber-900/60 font-mono"
+                >
+                  <span>||||</span>
+                  <span className="font-sans font-bold text-[9px]">TAP2READ</span>
+                  <span>||||</span>
+                </div>
+
+                <div className="p-6 sm:p-8 text-center pt-7">
                   <div className="mb-6">
                     <h3 className="text-2xl sm:text-3xl font-black font-jolly text-slate-800 flex items-center justify-center gap-2">
+                      <DoodleSparkle size={18} color="#38bdf8" />
                       <span>What is your name?</span>
                       <span className="inline-block animate-bounce text-2xl">😊</span>
                     </h3>
-                    <p className="text-xs sm:text-sm text-slate-500 mt-2">
-                      Type your name below so we can start your reading adventure! 🌟
+                    <p className="text-xs sm:text-sm text-slate-500 mt-2 flex items-center justify-center gap-1.5">
+                      Type your name below so we can start your reading adventure!
+                      <DoodleStar size={14} color="#f59e0b" />
                     </p>
                   </div>
 
@@ -135,7 +161,7 @@ export function HeroSection({ studentName, onStudentRegister }: HeroSectionProps
                           setInputName(e.target.value);
                           if (error) setError(null);
                         }}
-                        className="h-12 text-base text-center font-bold font-jolly bg-sky-50/50 border-2 border-blue-200 focus-visible:ring-blue-400 rounded-2xl placeholder:font-normal placeholder:text-slate-400"
+                        className="h-12 text-base text-center font-bold font-jolly bg-sky-50/50 border-2 border-sky-200 focus-visible:ring-sky-400 rounded-2xl placeholder:font-normal placeholder:text-slate-400"
                       />
                       {error && (
                         <p className="text-xs text-destructive font-bold font-jolly mt-1.5">
@@ -163,11 +189,21 @@ export function HeroSection({ studentName, onStudentRegister }: HeroSectionProps
                       )}
                     </Button>
                   </form>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             ) : (
-              <Card className="max-w-md mx-auto border-2 border-emerald-200 shadow-xl bg-white/95 backdrop-blur rounded-3xl p-6 sm:p-8 text-center space-y-4">
-                <div className="flex flex-col items-center justify-center gap-2">
+              <div className="max-w-md mx-auto handcrafted-card border-2 border-emerald-300 shadow-xl bg-white/95 backdrop-blur p-6 sm:p-8 text-center space-y-4 relative overflow-visible">
+                {/* Washi Tape Accent */}
+                <div
+                  aria-hidden="true"
+                  className="absolute -top-3 left-1/2 -translate-x-1/2 w-28 h-6 bg-emerald-200/90 border border-dashed border-emerald-300 rounded-xs shadow-xs transform rotate-1 pointer-events-none select-none z-20 flex items-center justify-between px-2 text-[8px] text-emerald-900/60 font-mono"
+                >
+                  <span>||||</span>
+                  <span className="font-sans font-bold text-[9px]">READER</span>
+                  <span>||||</span>
+                </div>
+
+                <div className="flex flex-col items-center justify-center gap-2 pt-2">
                   <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 shadow-inner">
                     <CheckCircle2 className="h-8 w-8 text-emerald-600" />
                   </div>
@@ -197,7 +233,7 @@ export function HeroSection({ studentName, onStudentRegister }: HeroSectionProps
                     Change Name
                   </Button>
                 </div>
-              </Card>
+              </div>
             )}
         </div>
       </section>
@@ -209,20 +245,27 @@ export function HeroSection({ studentName, onStudentRegister }: HeroSectionProps
       >
 
         <div className="container relative z-10 max-w-5xl mx-auto">
-            <div className="text-center max-w-2xl mx-auto mb-12">
-              <Badge
-                variant="outline"
-                className="mb-3 text-xs sm:text-sm font-bold bg-white/90 text-purple-700 border-purple-200 px-3.5 py-1 rounded-full shadow-xs"
-              >
-                🎈 Learning Modules
-              </Badge>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black font-jolly tracking-tight text-slate-900 mb-3 drop-shadow-xs">
-                Choose What to Explore!
-              </h2>
-              <p className="text-sm sm:text-base text-slate-800 font-medium">
-                Tap any of the three fun categories below to jump right into your lesson!
-              </p>
-            </div>
+            {/* Section 2: Organic Blob Shape Banner for Choose What to Explore */}
+            <OrganicBlobBanner className="max-w-2xl mb-12">
+              <div className="text-center relative">
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <DoodleSparkle size={16} color="#a855f7" />
+                  <Badge
+                    variant="outline"
+                    className="text-xs sm:text-sm font-bold bg-purple-50/90 text-purple-700 border-purple-200 px-3.5 py-1 rounded-full shadow-xs"
+                  >
+                    🎈 Learning Modules
+                  </Badge>
+                  <DoodleStar size={16} color="#f59e0b" />
+                </div>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-black font-jolly tracking-tight text-slate-900 mb-2 drop-shadow-xs">
+                  Choose What to Explore!
+                </h2>
+                <p className="text-sm sm:text-base text-slate-700 font-medium font-sans max-w-lg mx-auto">
+                  Tap any of the three fun categories below to jump right into your lesson!
+                </p>
+              </div>
+            </OrganicBlobBanner>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-5xl mx-auto">
               {/* Module 1: Reading Materials (Book Clip-art) */}
@@ -232,11 +275,11 @@ export function HeroSection({ studentName, onStudentRegister }: HeroSectionProps
               >
                 <div>
                   {/* Clip-art illustration for Reading Materials */}
-                  <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden mb-4 bg-sky-50 border border-sky-100 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                  <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden mb-4 bg-sky-50/80 border border-sky-100 flex items-center justify-center p-3 group-hover:scale-105 transition-transform duration-300">
                     <img
-                      src="/images/clipart/book-clipart.jpg"
+                      src="/images/clipart/book-clipart.png"
                       alt="Reading Materials - Books and Stories"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain"
                     />
                   </div>
 
@@ -271,11 +314,11 @@ export function HeroSection({ studentName, onStudentRegister }: HeroSectionProps
               >
                 <div>
                   {/* Clip-art illustration for Videos */}
-                  <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden mb-4 bg-purple-50 border border-purple-100 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                  <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden mb-4 bg-purple-50/80 border border-purple-100 flex items-center justify-center p-3 group-hover:scale-105 transition-transform duration-300">
                     <img
-                      src="/images/clipart/video-clipart.jpg"
+                      src="/images/clipart/video-clipart.png"
                       alt="Reading Videos"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain"
                     />
                   </div>
 
@@ -310,11 +353,11 @@ export function HeroSection({ studentName, onStudentRegister }: HeroSectionProps
               >
                 <div>
                   {/* Clip-art illustration for Activities */}
-                  <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden mb-4 bg-amber-50 border border-amber-100 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                  <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden mb-4 bg-amber-50/80 border border-amber-100 flex items-center justify-center p-3 group-hover:scale-105 transition-transform duration-300">
                     <img
-                      src="/images/clipart/activity-clipart.jpg"
+                      src="/images/clipart/activity-clipart.png"
                       alt="Interactive Activities"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain"
                     />
                   </div>
 

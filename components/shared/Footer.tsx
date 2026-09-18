@@ -8,9 +8,11 @@ export function Footer() {
       <div className="container mx-auto px-4 sm:px-8">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 pb-6 border-b border-border">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-tr from-[#0284c7] via-[#16a34a] to-[#dc2626] text-white shadow-xs">
-              <BookOpen className="h-4 w-4" />
-            </div>
+            <img
+              src="/images/tap2read-logo.png"
+              alt="Tap2Read Logo"
+              className="h-8 w-8 object-contain rounded-lg shadow-xs"
+            />
             <div>
               <p className="font-bold font-jolly text-foreground text-base">
                 Tap<span className="text-blue-600">2</span><ReadText uppercase />

@@ -74,9 +74,11 @@ export function StudentAuthModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md rounded-3xl border-2 border-blue-200 bg-white p-6 shadow-2xl">
         <DialogHeader className="text-center sm:text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600 text-white mb-2 shadow-md">
-            <BookOpen className="h-6 w-6" />
-          </div>
+          <img
+            src="/images/tap2read-logo.png"
+            alt="Tap2Read Logo"
+            className="mx-auto h-16 w-16 object-contain rounded-2xl mb-2 drop-shadow-md"
+          />
           <DialogTitle className="text-2xl font-black font-jolly text-slate-900">
             What is your name? 😊
           </DialogTitle>

@@ -7,6 +7,12 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ReadText } from "@/components/shared/ReadText";
+import {
+  TornPaperBanner,
+  DoodleStar,
+  DoodleSparkle,
+  BrushSquiggle,
+} from "@/components/shared/HandcraftedElements";
 
 interface SightWord {
   id: string | number;
@@ -33,28 +39,45 @@ export function MaterialsSection({
   return (
     <section id="materials" className="scroll-mt-16 sm:scroll-mt-20 py-20 md:py-28 bg-transparent relative overflow-hidden">
       <div className="container mx-auto px-4 sm:px-8 max-w-6xl relative z-10">
+        {/* Photo 3: Handcrafted Header Block */}
         <div className="max-w-2xl mx-auto text-center mb-12">
-          {/* Book Clip-art badge */}
-          <div className="mx-auto w-24 h-24 sm:w-28 sm:h-28 rounded-3xl overflow-hidden shadow-lg border-2 border-sky-200 mb-4 bg-sky-50 hover:scale-105 transition-transform">
-            <img
-              src="/images/clipart/book-clipart.jpg"
-              alt="Story Book Clip-art"
-              className="w-full h-full object-cover"
-            />
+          {/* Storybook Clip-art icon with background removed */}
+          <div className="relative inline-block mb-3">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto flex items-center justify-center hover:scale-110 transition-transform duration-300">
+              <img
+                src="/images/clipart/book-clipart.png"
+                alt="Story Book Clip-art"
+                className="w-full h-full object-contain"
+              />
+            </div>
           </div>
 
-          <Badge
-            variant="outline"
-            className="mb-3 font-bold font-jolly text-xs sm:text-sm bg-sky-100/80 text-sky-800 border-sky-200 px-3.5 py-1 rounded-full shadow-xs"
-          >
-            📚 Core Reading Curriculum
-          </Badge>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black font-jolly text-slate-900 tracking-tight mb-3">
-            <ReadText />ing <span className="jolly-gradient-text">Materials</span>
-          </h2>
-          <p className="text-sm sm:text-base text-slate-800 font-medium max-w-xl mx-auto">
-            Tap on sight words to see colorful visual flashcards, or open up short stories to read exciting adventures!
-          </p>
+          {/* Section 3: Rough Torn-Paper Style Banner */}
+          <TornPaperBanner className="max-w-2xl">
+            <div className="text-center relative">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <DoodleSparkle size={16} color="#0ea5e9" />
+                <Badge
+                  variant="outline"
+                  className="font-bold font-jolly text-xs sm:text-sm bg-sky-50/90 text-sky-800 border-sky-200 px-3.5 py-1 rounded-full shadow-xs"
+                >
+                  📚 Core Reading Curriculum
+                </Badge>
+                <DoodleStar size={16} color="#f59e0b" />
+              </div>
+
+              <div className="relative inline-block mb-2">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-black font-jolly text-slate-900 tracking-tight">
+                  <ReadText />ing <span className="jolly-gradient-text">Materials</span>
+                </h2>
+                <BrushSquiggle color="#38bdf8" className="mt-0.5 opacity-80" />
+              </div>
+
+              <p className="text-sm sm:text-base text-slate-700 font-medium font-sans max-w-lg mx-auto leading-relaxed">
+                Tap on sight words to see colorful visual flashcards, or open up short stories to read exciting adventures!
+              </p>
+            </div>
+          </TornPaperBanner>
         </div>
 
         <Tabs defaultValue="sightwords" className="w-full">

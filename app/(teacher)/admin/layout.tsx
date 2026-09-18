@@ -47,9 +47,11 @@ export default function AdminLayout({
         <div>
           {/* Header */}
           <div className="h-16 px-5 flex items-center border-b border-border gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground shadow-xs">
-              <BookOpen className="h-4 w-4" />
-            </div>
+            <img
+              src="/images/tap2read-logo.png"
+              alt="Tap2Read Logo"
+              className="h-8 w-8 object-contain rounded-md shadow-xs"
+            />
             <div>
               <span className="font-semibold text-foreground text-sm flex items-center gap-1">
                 Tap2Read

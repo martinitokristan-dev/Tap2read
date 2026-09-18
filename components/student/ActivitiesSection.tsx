@@ -5,6 +5,12 @@ import { ExternalLink, Palette } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  ScrapbookCraftBanner,
+  DoodleStar,
+  DoodleSparkle,
+  BrushSquiggle,
+} from "@/components/shared/HandcraftedElements";
 
 interface ActivityItem {
   id: string | number;
@@ -24,28 +30,45 @@ export function ActivitiesSection({ activities }: ActivitiesSectionProps) {
   return (
     <section id="activities" className="scroll-mt-16 sm:scroll-mt-20 py-20 md:py-28 bg-transparent relative overflow-hidden">
       <div className="container mx-auto px-4 sm:px-8 max-w-6xl relative z-10">
+        {/* Photo 5: Handcrafted Header Block */}
         <div className="max-w-2xl mx-auto text-center mb-12">
-          {/* Activity Clip-art badge */}
-          <div className="mx-auto w-24 h-24 sm:w-28 sm:h-28 rounded-3xl overflow-hidden shadow-lg border-2 border-amber-200 mb-4 bg-amber-50 hover:scale-105 transition-transform">
-            <img
-              src="/images/clipart/activity-clipart.jpg"
-              alt="Activities Clip-art"
-              className="w-full h-full object-cover"
-            />
+          {/* Activity Clip-art icon with background removed */}
+          <div className="relative inline-block mb-3">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto flex items-center justify-center hover:scale-110 transition-transform duration-300">
+              <img
+                src="/images/clipart/activity-clipart.png"
+                alt="Activities Clip-art"
+                className="w-full h-full object-contain"
+              />
+            </div>
           </div>
 
-          <Badge
-            variant="outline"
-            className="mb-3 font-bold font-jolly text-xs sm:text-sm bg-amber-100/80 text-amber-800 border-amber-200 px-3.5 py-1 rounded-full shadow-xs"
-          >
-            🎨 Fun Reading Games & Tasks
-          </Badge>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black font-jolly text-slate-900 tracking-tight mb-3">
-            Canva Learning <span className="jolly-gradient-text">Activities</span>
-          </h2>
-          <p className="text-sm sm:text-base text-slate-800 font-medium max-w-xl mx-auto">
-            Hands-on worksheets, creative phonic puzzles, and interactive reading games crafted on Canva!
-          </p>
+          {/* Section 5: Handcrafted Scrapbook-Style Banner */}
+          <ScrapbookCraftBanner className="max-w-2xl">
+            <div className="text-center relative">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <DoodleSparkle size={16} color="#f59e0b" />
+                <Badge
+                  variant="outline"
+                  className="font-bold font-jolly text-xs sm:text-sm bg-amber-50/90 text-amber-800 border-amber-200 px-3.5 py-1 rounded-full shadow-xs"
+                >
+                  🎨 Fun Reading Games & Tasks
+                </Badge>
+                <DoodleStar size={16} color="#ef4444" />
+              </div>
+
+              <div className="relative inline-block mb-2">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-black font-jolly text-slate-900 tracking-tight">
+                  Canva Learning <span className="jolly-gradient-text">Activities</span>
+                </h2>
+                <BrushSquiggle color="#f59e0b" className="mt-0.5 opacity-80" />
+              </div>
+
+              <p className="text-sm sm:text-base text-slate-700 font-medium font-sans max-w-lg mx-auto leading-relaxed">
+                Hands-on worksheets, creative phonic puzzles, and interactive reading games crafted on Canva!
+              </p>
+            </div>
+          </ScrapbookCraftBanner>
         </div>
 
         {activities.length === 0 ? (
