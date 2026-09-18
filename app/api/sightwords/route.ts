@@ -4,7 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { sightWordService } from '@/services/sightword.service';
 import { successResponse, errorResponse } from '@/types/api.types';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 // GET /api/sightwords — public
 export async function GET() {
@@ -12,9 +12,9 @@ export async function GET() {
     const items = await sightWordService.getAll();
     return NextResponse.json(successResponse(items), {
       headers: {
-        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
-        'CDN-Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
-        'Vercel-CDN-Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'CDN-Cache-Control': 'no-store',
+        'Vercel-CDN-Cache-Control': 'no-store',
       },
     });
   } catch (error) {

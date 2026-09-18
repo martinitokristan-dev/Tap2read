@@ -61,7 +61,7 @@ export default function AdminVideosPage() {
 
   const loadItems = async () => {
     try {
-      const res = await fetch("/api/videos");
+      const res = await fetch("/api/videos", { cache: "no-store" });
       const data = await res.json();
       if (data?.data) setItems(data.data);
     } catch (err) {
@@ -178,14 +178,16 @@ export default function AdminVideosPage() {
           </p>
         </div>
 
-        <Button
-          onClick={openAdd}
-          disabled={isMaxReached}
-          className="font-bold rounded-xl gap-2 shadow-md"
-        >
-          <Plus className="h-4 w-4" />
-          {isMaxReached ? "Limit Reached (5/5)" : "Upload Video"}
-        </Button>
+        {items.length > 0 && (
+          <Button
+            onClick={openAdd}
+            disabled={isMaxReached}
+            className="font-bold rounded-xl gap-2 shadow-md"
+          >
+            <Plus className="h-4 w-4" />
+            {isMaxReached ? "Limit Reached (5/5)" : "Upload Video"}
+          </Button>
+        )}
       </div>
 
       {isMaxReached && (

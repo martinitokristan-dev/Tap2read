@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { sightWordService } from '@/services/sightword.service';
+import { cloudinaryService } from '@/services/cloudinary.service';
 import { successResponse, errorResponse } from '@/types/api.types';
 
 type Params = { params: { id: string } };
@@ -41,7 +42,16 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
     const session = await getServerSession(authOptions);
     if (!session) return NextResponse.json(errorResponse('Unauthorized'), { status: 401 });
 
+    // Fetch the item first to get its Cloudinary URL before deleting from DB
+    const item = await sightWordService.getById(Number(params.id));
     await sightWordService.delete(Number(params.id));
+
+    // Delete the image from Cloudinary storage to free up space
+    if (item?.imageUrl) {
+      const publicId = cloudinaryService.extractPublicId(item.imageUrl);
+      if (publicId) await cloudinaryService.deleteAsset(publicId, 'image');
+    }
+
     return NextResponse.json(successResponse(null, 'Sight word deleted'));
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Failed to delete';

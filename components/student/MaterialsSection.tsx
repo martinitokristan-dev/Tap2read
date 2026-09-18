@@ -101,9 +101,9 @@ export function MaterialsSection({
           {/* SIGHT WORDS TAB */}
           <TabsContent value="sightwords" className="mt-0">
             {sightWords.length === 0 ? (
-              <div className="text-center py-16 bg-muted/20 rounded-lg border border-dashed border-border">
+              <div className="text-center py-16 bg-muted/20 rounded-2xl border-2 border-dashed border-border">
                 <BookOpen className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-                <p className="text-sm font-medium text-foreground">No sight words available</p>
+                <p className="text-base font-bold font-jolly text-foreground">No sight words available</p>
                 <p className="text-xs text-muted-foreground mt-1">
                   Words will appear here once published by the teacher.
                 </p>

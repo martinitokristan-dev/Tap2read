@@ -3,8 +3,9 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, X, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
+import { ArrowLeft, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Tap2ReadLoader } from "@/components/shared/Tap2ReadLoader";
 
 interface SightWord {
   id: string | number;
@@ -82,14 +83,7 @@ export default function SightWordPage() {
   }, [prevWord, nextWord, router]);
 
   if (loading) {
-    return (
-      <div className="h-screen bg-[url('/images/bg-pattern.png')] bg-repeat bg-[length:380px] bg-[#fbfbf9] flex flex-col items-center justify-center p-4">
-        <div className="bg-white rounded-3xl p-8 shadow-xl border-2 border-sky-100 flex flex-col items-center gap-4 text-center max-w-sm w-full animate-pulse">
-          <Sparkles className="h-12 w-12 text-blue-600 animate-spin" />
-          <p className="font-jolly font-black text-xl text-slate-800">Opening flashcard...</p>
-        </div>
-      </div>
-    );
+    return <Tap2ReadLoader message="Opening flashcard..." subMessage="Tap to listen and read words!" />;
   }
 
   if (error || !sightWord) {

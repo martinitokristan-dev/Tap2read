@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { activityService } from '@/services/activity.service';
+import { cloudinaryService } from '@/services/cloudinary.service';
 import { successResponse, errorResponse } from '@/types/api.types';
 
 type Params = { params: { id: string } };
@@ -41,7 +42,17 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) return NextResponse.json(errorResponse('Unauthorized'), { status: 401 });
+
+    // Fetch item first to get the Cloudinary image URL before deleting from DB
+    const item = await activityService.getById(Number(params.id));
     await activityService.delete(Number(params.id));
+
+    // Delete thumbnail/image from Cloudinary to free storage
+    if (item?.imageUrl) {
+      const publicId = cloudinaryService.extractPublicId(item.imageUrl);
+      if (publicId) await cloudinaryService.deleteAsset(publicId, 'image');
+    }
+
     return NextResponse.json(successResponse(null, 'Activity deleted'));
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Failed to delete';

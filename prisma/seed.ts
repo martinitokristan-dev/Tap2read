@@ -38,7 +38,65 @@ async function main() {
   await prisma.contactMessage.deleteMany({});
   console.log('🧹 Contact Messages cleared (0 items)');
 
-  console.log('🎉 Clean database setup complete! Only teacher account exists.');
+  // ─── 3. Seed Researchers (Fixed 6-member team, always required) ────────────
+  await prisma.researcher.deleteMany({});
+  const researchersData = [
+    {
+      id: 1,
+      fullName: 'Bobis, Samantha',
+      role: 'Content Lead & Reading Pedagogy',
+      photoUrl: '',
+      description: 'Passionate about early childhood reading development, curriculum localization, and foundational literacy pedagogy.',
+      displayOrder: 1,
+    },
+    {
+      id: 2,
+      fullName: 'Cabaral, Joshua',
+      role: 'Technical Lead & Software Architecture',
+      photoUrl: '',
+      description: 'Specializes in multimedia learning systems, full-stack digital architectures, and accessible user experiences for young learners.',
+      displayOrder: 2,
+    },
+    {
+      id: 3,
+      fullName: 'Capa, Jasmine',
+      role: 'Curriculum Designer & Instructional Media',
+      photoUrl: '',
+      description: 'Focuses on elementary reading strategies, story-based learning interventions, and visual literacy aids.',
+      displayOrder: 3,
+    },
+    {
+      id: 4,
+      fullName: 'Curato, Kesiya Jean',
+      role: 'Evaluation Specialist & Data Analytics',
+      photoUrl: '',
+      description: 'Dedicated to assessing reading comprehension outcomes, digital engagement metrics, and interactive learning efficacy.',
+      displayOrder: 4,
+    },
+    {
+      id: 5,
+      fullName: 'Margate, Czarina Kate',
+      role: 'Activity Developer & Creative Director',
+      photoUrl: '',
+      description: 'Creates interactive Canva learning worksheets, gamified reading puzzles, and engaging creative exercises tailored for children.',
+      displayOrder: 5,
+    },
+    {
+      id: 6,
+      fullName: 'Piñon, Jhonabelle',
+      role: 'Instructional Designer & Student Experience',
+      photoUrl: '',
+      description: 'Designs intuitive reading journeys, scaffolded literacy pathways, and supportive classroom implementation frameworks.',
+      displayOrder: 6,
+    },
+  ];
+  for (const res of researchersData) {
+    await prisma.researcher.create({ data: res });
+  }
+  console.log('✅ 6 Researchers seeded');
+
+  console.log('🎉 Clean database setup complete! Teacher account + Researchers exist.');
+
 }
 
 main()

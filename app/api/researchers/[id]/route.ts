@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { researcherService } from '@/services/researcher.service';
+import { cloudinaryService } from '@/services/cloudinary.service';
 import { successResponse, errorResponse } from '@/types/api.types';
 
 type Params = { params: { id: string } };
@@ -30,8 +31,16 @@ export async function PUT(req: NextRequest, { params }: Params) {
     if (body.description !== undefined) updateData.description = body.description.trim();
     else if (body.bio !== undefined) updateData.description = body.bio.trim();
 
-    if (body.photoUrl !== undefined) updateData.photoUrl = body.photoUrl;
-    else if (body.imageUrl !== undefined) updateData.photoUrl = body.imageUrl;
+    const newPhoto = body.photoUrl ?? body.imageUrl;
+    if (newPhoto !== undefined) {
+      // If replacing an existing photo, delete the old one from Cloudinary first
+      const existing = await researcherService.getById(Number(params.id));
+      if (existing?.photoUrl && existing.photoUrl !== newPhoto) {
+        const oldPublicId = cloudinaryService.extractPublicId(existing.photoUrl);
+        if (oldPublicId) await cloudinaryService.deleteAsset(oldPublicId, 'image');
+      }
+      updateData.photoUrl = newPhoto;
+    }
 
     const item = await researcherService.update(Number(params.id), updateData);
     return NextResponse.json(successResponse(item, 'Researcher updated'));

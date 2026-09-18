@@ -53,7 +53,7 @@ export default function AdminResearchersPage() {
 
   const loadItems = async () => {
     try {
-      const res = await fetch("/api/researchers");
+      const res = await fetch("/api/researchers", { cache: "no-store" });
       const data = await res.json();
       if (data?.data) setItems(data.data);
     } catch (err) {

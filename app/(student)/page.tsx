@@ -46,11 +46,11 @@ export default function StudentHomePage() {
     async function loadContent() {
       try {
         const [swRes, ssRes, vidRes, actRes, resRes] = await Promise.all([
-          fetch("/api/sightwords"),
-          fetch("/api/shortstories"),
-          fetch("/api/videos"),
-          fetch("/api/activities"),
-          fetch("/api/researchers"),
+          fetch("/api/sightwords", { cache: "no-store" }),
+          fetch("/api/shortstories", { cache: "no-store" }),
+          fetch("/api/videos", { cache: "no-store" }),
+          fetch("/api/activities", { cache: "no-store" }),
+          fetch("/api/researchers", { cache: "no-store" }),
         ]);
 
         const [sw, ss, vid, act, res] = await Promise.all([

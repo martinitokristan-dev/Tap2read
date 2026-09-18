@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, X, ChevronLeft, ChevronRight, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Tap2ReadLoader } from "@/components/shared/Tap2ReadLoader";
 
 interface ShortStory {
   id: string | number;
@@ -83,14 +84,7 @@ export default function ShortStoryPage() {
   }, [prevStory, nextStory, router]);
 
   if (loading) {
-    return (
-      <div className="h-screen bg-[url('/images/bg-pattern.png')] bg-repeat bg-[length:380px] bg-[#fbfbf9] flex flex-col items-center justify-center p-4">
-        <div className="bg-white rounded-3xl p-8 shadow-xl border-2 border-purple-100 flex flex-col items-center gap-4 text-center max-w-sm w-full animate-pulse">
-          <BookOpen className="h-12 w-12 text-blue-600 animate-bounce" />
-          <p className="font-jolly font-black text-xl text-slate-800">Opening your story...</p>
-        </div>
-      </div>
-    );
+    return <Tap2ReadLoader message="Opening your story..." subMessage="Get ready for an exciting adventure!" />;
   }
 
   if (error || !story) {

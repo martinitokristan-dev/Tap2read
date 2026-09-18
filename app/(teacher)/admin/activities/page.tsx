@@ -65,7 +65,7 @@ export default function AdminActivitiesPage() {
 
   const loadItems = async () => {
     try {
-      const res = await fetch("/api/activities");
+      const res = await fetch("/api/activities", { cache: "no-store" });
       const data = await res.json();
       if (data?.data) setItems(data.data);
     } catch (err) {
@@ -187,14 +187,16 @@ export default function AdminActivitiesPage() {
           </p>
         </div>
 
-        <Button
-          onClick={openAdd}
-          disabled={isMaxReached}
-          className="font-bold rounded-xl gap-2 shadow-md"
-        >
-          <Plus className="h-4 w-4" />
-          {isMaxReached ? "Limit Reached (5/5)" : "Add Canva Activity"}
-        </Button>
+        {items.length > 0 && (
+          <Button
+            onClick={openAdd}
+            disabled={isMaxReached}
+            className="font-bold rounded-xl gap-2 shadow-md"
+          >
+            <Plus className="h-4 w-4" />
+            {isMaxReached ? "Limit Reached (5/5)" : "Add Canva Activity"}
+          </Button>
+        )}
       </div>
 
       {isMaxReached && (

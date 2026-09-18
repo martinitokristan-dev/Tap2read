@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { videoService } from '@/services/video.service';
+import { cloudinaryService } from '@/services/cloudinary.service';
 import { successResponse, errorResponse } from '@/types/api.types';
 
 type Params = { params: { id: string } };
@@ -33,7 +34,21 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) return NextResponse.json(errorResponse('Unauthorized'), { status: 401 });
+
+    // Fetch the item first to get its Cloudinary URLs before deleting from DB
+    const item = await videoService.getById(Number(params.id));
     await videoService.delete(Number(params.id));
+
+    // Delete both the video file and thumbnail from Cloudinary to free storage
+    if (item?.videoUrl) {
+      const publicId = cloudinaryService.extractPublicId(item.videoUrl);
+      if (publicId) await cloudinaryService.deleteAsset(publicId, 'video');
+    }
+    if (item?.thumbnailUrl) {
+      const publicId = cloudinaryService.extractPublicId(item.thumbnailUrl);
+      if (publicId) await cloudinaryService.deleteAsset(publicId, 'image');
+    }
+
     return NextResponse.json(successResponse(null, 'Video deleted'));
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Failed to delete';
