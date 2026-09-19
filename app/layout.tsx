@@ -18,7 +18,7 @@ const nunito = Nunito({
 export const metadata: Metadata = {
   title: "Tap2Read | Interactive Learning Portal for Young Readers",
   description:
-    "An interactive learning platform featuring sight words, short stories, educational videos, and Canva learning activities.",
+    "TAP2READ — your home for growing readers! TAP2READ is a fun and friendly website created especially for Grade 2 pupils to help develop their reading fluency through engaging reading materials, and repetitive reading resources. Like a home where learners feel safe to learn, practice, and grow, TAP2READ provides a welcoming space where every tap brings them closer to becoming more confident, accurate, and fluent readers. Here, reading is not just a skill to practice—it is an exciting journey filled with stories, words, discovery, and growth. Tap. Read. Learn. Grow!",
   icons: {
     icon: '/favicon.ico',
   },

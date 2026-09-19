@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollReveal } from "@/components/shared/ScrollReveal";
 import { toast } from "sonner";
 import {
-  PaintStrokeBanner,
+  BrushStrokeBanner,
   OrganicBlobBanner,
   DoodleStar,
   DoodleSparkle,
@@ -110,131 +110,130 @@ export function HeroSection({ studentName, onStudentRegister }: HeroSectionProps
           />
         </div>
 
-        <div className="container relative z-10 max-w-3xl mx-auto px-4 sm:px-8 text-center my-auto">
-            {/* Section 1: Handcrafted Paint-Stroke Banner for Introduction */}
-            <PaintStrokeBanner className="max-w-2xl mb-8 sm:mb-10">
-              {/* Content (Normal text with Tap2Read highlighted) */}
-              <div className="relative z-10 text-center py-2 px-1 sm:px-3">
-                <p className="text-base sm:text-lg md:text-xl text-slate-700 font-normal font-sans leading-relaxed">
-                  <span className="text-xl sm:text-2xl md:text-3xl font-black font-jolly text-blue-600 mr-1.5 inline-block">
-                    Tap2Read
-                  </span>
-                  is an interactive reading platform for early learners.
-                  <br className="hidden sm:inline" />
-                  {" "}Explore sight words, illustrated stories, video lessons, and fun activities that build strong reading skills.
-                </p>
+        <div className="container relative z-10 max-w-4xl mx-auto px-4 sm:px-8 text-center my-auto">
+          {/* Section 1: Introduction Illustrated Banner with Handcrafted Paint-Brush Border & Corner Canvas */}
+          <BrushStrokeBanner className="max-w-3xl mb-8 sm:mb-10 transition-transform duration-300 hover:scale-[1.008]">
+            <img
+              src="/images/tap2read-description-clean.png"
+              alt="TAP2READ — your home for growing readers! TAP2READ is a fun and friendly website created especially for Grade 2 pupils to help develop their reading fluency through engaging reading materials, and repetitive reading resources. Like a home where learners feel safe to learn, practice, and grow, TAP2READ provides a welcoming space where every tap brings them closer to becoming more confident, accurate, and fluent readers. Here, reading is not just a skill to practice—it is an exciting journey filled with stories, words, discovery, and growth. Tap. Read. Learn. Grow!"
+              className="w-full h-auto object-contain block mx-auto rounded-xl sm:rounded-2xl"
+            />
+            {/* Screen-reader accessible full text */}
+            <h2 className="sr-only">TAP2READ — your home for growing readers!</h2>
+            <p className="sr-only">
+              TAP2READ is a fun and friendly website created especially for Grade 2 pupils to help develop their reading fluency through engaging reading materials, and repetitive reading resources. Like a home where learners feel safe to learn, practice, and grow, TAP2READ provides a welcoming space where every tap brings them closer to becoming more confident, accurate, and fluent readers. Here, reading is not just a skill to practice—it is an exciting journey filled with stories, words, discovery, and growth. Tap. Read. Learn. Grow!
+            </p>
+          </BrushStrokeBanner>
+
+          {/* Photo 1: Handcrafted Scrapbook-Style Name Prompt Card */}
+          {!studentName ? (
+            <div className="max-w-md mx-auto handcrafted-card border-2 border-sky-300 shadow-xl bg-white/95 backdrop-blur relative overflow-visible">
+              {/* Handcrafted Washi Tape Accent at Top */}
+              <div
+                aria-hidden="true"
+                className="absolute -top-3 left-1/2 -translate-x-1/2 w-28 h-6 bg-amber-200/90 border border-dashed border-amber-300 rounded-xs shadow-xs transform -rotate-1 pointer-events-none select-none z-20 flex items-center justify-between px-2 text-[8px] text-amber-900/60 font-mono"
+              >
+                <span>||||</span>
+                <span className="font-sans font-bold text-[9px]">TAP2READ</span>
+                <span>||||</span>
               </div>
-            </PaintStrokeBanner>
 
-            {/* Photo 1: Handcrafted Scrapbook-Style Name Prompt Card */}
-            {!studentName ? (
-              <div className="max-w-md mx-auto handcrafted-card border-2 border-sky-300 shadow-xl bg-white/95 backdrop-blur relative overflow-visible">
-                {/* Handcrafted Washi Tape Accent at Top */}
-                <div
-                  aria-hidden="true"
-                  className="absolute -top-3 left-1/2 -translate-x-1/2 w-28 h-6 bg-amber-200/90 border border-dashed border-amber-300 rounded-xs shadow-xs transform -rotate-1 pointer-events-none select-none z-20 flex items-center justify-between px-2 text-[8px] text-amber-900/60 font-mono"
-                >
-                  <span>||||</span>
-                  <span className="font-sans font-bold text-[9px]">TAP2READ</span>
-                  <span>||||</span>
-                </div>
-
-                <div className="p-6 sm:p-8 text-center pt-7">
-                  <div className="mb-6">
-                    <h3 className="text-2xl sm:text-3xl font-black font-jolly text-slate-800 flex items-center justify-center gap-2">
-                      <DoodleSparkle size={18} color="#38bdf8" />
-                      <span>What is your name?</span>
-                      <span className="inline-block animate-bounce text-2xl">😊</span>
-                    </h3>
-                    <p className="text-xs sm:text-sm text-slate-500 mt-2 flex items-center justify-center gap-1.5">
-                      Type your name below so we can start your reading adventure!
-                      <DoodleStar size={14} color="#f59e0b" />
-                    </p>
-                  </div>
-
-                  <form onSubmit={handleRegister} className="space-y-4">
-                    <div className="space-y-1.5">
-                      <Input
-                        placeholder="Type your name here..."
-                        value={inputName}
-                        onChange={(e) => {
-                          setInputName(e.target.value);
-                          if (error) setError(null);
-                        }}
-                        className="h-12 text-base text-center font-bold font-jolly bg-sky-50/50 border-2 border-sky-200 focus-visible:ring-sky-400 rounded-2xl placeholder:font-normal placeholder:text-slate-400"
-                      />
-                      {error && (
-                        <p className="text-xs text-destructive font-bold font-jolly mt-1.5">
-                          ⚠️ {error}
-                        </p>
-                      )}
-                    </div>
-
-                    <Button
-                      type="submit"
-                      size="default"
-                      className="w-full h-12 text-base font-bold font-jolly rounded-2xl bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer"
-                      disabled={loading}
-                    >
-                      {loading ? (
-                        <>
-                          <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                          Starting Adventure...
-                        </>
-                      ) : (
-                        <>
-                          Let&apos;s Read!
-                          <ArrowRight className="ml-2 h-5 w-5" />
-                        </>
-                      )}
-                    </Button>
-                  </form>
-                </div>
-              </div>
-            ) : (
-              <div className="max-w-md mx-auto handcrafted-card border-2 border-emerald-300 shadow-xl bg-white/95 backdrop-blur p-6 sm:p-8 text-center space-y-4 relative overflow-visible">
-                {/* Washi Tape Accent */}
-                <div
-                  aria-hidden="true"
-                  className="absolute -top-3 left-1/2 -translate-x-1/2 w-28 h-6 bg-emerald-200/90 border border-dashed border-emerald-300 rounded-xs shadow-xs transform rotate-1 pointer-events-none select-none z-20 flex items-center justify-between px-2 text-[8px] text-emerald-900/60 font-mono"
-                >
-                  <span>||||</span>
-                  <span className="font-sans font-bold text-[9px]">READER</span>
-                  <span>||||</span>
-                </div>
-
-                <div className="flex flex-col items-center justify-center gap-2 pt-2">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 shadow-inner">
-                    <CheckCircle2 className="h-8 w-8 text-emerald-600" />
-                  </div>
-                  <h3 className="text-2xl font-black font-jolly text-slate-900 mt-1">
-                    Welcome back, {studentName}! 🎉
+              <div className="p-6 sm:p-8 text-center pt-7">
+                <div className="mb-6">
+                  <h3 className="text-2xl sm:text-3xl font-black font-jolly text-slate-800 flex items-center justify-center gap-2">
+                    <DoodleSparkle size={18} color="#38bdf8" />
+                    <span>What is your name?</span>
+                    <span className="inline-block animate-bounce text-2xl">😊</span>
                   </h3>
+                  <p className="text-xs sm:text-sm text-slate-500 mt-2 flex items-center justify-center gap-1.5">
+                    Type your name below so we can start your reading adventure!
+                    <DoodleStar size={14} color="#f59e0b" />
+                  </p>
                 </div>
-                <p className="text-xs sm:text-sm text-slate-600 font-medium">
-                  You are all set! Explore the fun reading materials, videos, and games below.
-                </p>
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-3">
+
+                <form onSubmit={handleRegister} className="space-y-4">
+                  <div className="space-y-1.5">
+                    <Input
+                      placeholder="Type your name here..."
+                      value={inputName}
+                      onChange={(e) => {
+                        setInputName(e.target.value);
+                        if (error) setError(null);
+                      }}
+                      className="h-12 text-base text-center font-bold font-jolly bg-sky-50/50 border-2 border-sky-200 focus-visible:ring-sky-400 rounded-2xl placeholder:font-normal placeholder:text-slate-400"
+                    />
+                    {error && (
+                      <p className="text-xs text-destructive font-bold font-jolly mt-1.5">
+                        ⚠️ {error}
+                      </p>
+                    )}
+                  </div>
+
                   <Button
-                    onClick={() => scrollTo("action-hub")}
-                    className="font-jolly font-bold gap-2 text-sm h-11 px-5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg cursor-pointer w-full sm:w-auto"
+                    type="submit"
+                    size="default"
+                    className="w-full h-12 text-base font-bold font-jolly rounded-2xl bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer"
+                    disabled={loading}
                   >
-                    Go to Learning Modules
-                    <ArrowDown className="h-4 w-4" />
+                    {loading ? (
+                      <>
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        Starting Adventure...
+                      </>
+                    ) : (
+                      <>
+                        Let&apos;s Read!
+                        <ArrowRight className="ml-2 h-5 w-5" />
+                      </>
+                    )}
                   </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      localStorage.removeItem("tap2read_student_name");
-                      window.location.reload();
-                    }}
-                    className="font-jolly text-xs h-11 px-4 rounded-xl border-slate-300 hover:bg-slate-100 cursor-pointer w-full sm:w-auto"
-                  >
-                    Change Name
-                  </Button>
-                </div>
+                </form>
               </div>
-            )}
+            </div>
+          ) : (
+            <div className="max-w-md mx-auto handcrafted-card border-2 border-emerald-300 shadow-xl bg-white/95 backdrop-blur p-6 sm:p-8 text-center space-y-4 relative overflow-visible">
+              {/* Washi Tape Accent */}
+              <div
+                aria-hidden="true"
+                className="absolute -top-3 left-1/2 -translate-x-1/2 w-28 h-6 bg-emerald-200/90 border border-dashed border-emerald-300 rounded-xs shadow-xs transform rotate-1 pointer-events-none select-none z-20 flex items-center justify-between px-2 text-[8px] text-emerald-900/60 font-mono"
+              >
+                <span>||||</span>
+                <span className="font-sans font-bold text-[9px]">READER</span>
+                <span>||||</span>
+              </div>
+
+              <div className="flex flex-col items-center justify-center gap-2 pt-2">
+                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 shadow-inner">
+                  <CheckCircle2 className="h-8 w-8 text-emerald-600" />
+                </div>
+                <h3 className="text-2xl font-black font-jolly text-slate-900 mt-1">
+                  Welcome back, {studentName}! 🎉
+                </h3>
+              </div>
+              <p className="text-xs sm:text-sm text-slate-600 font-medium">
+                You are all set! Explore the fun reading materials, videos, and games below.
+              </p>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-3">
+                <Button
+                  onClick={() => scrollTo("action-hub")}
+                  className="font-jolly font-bold gap-2 text-sm h-11 px-5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg cursor-pointer w-full sm:w-auto"
+                >
+                  Tap2Read Library
+                  <ArrowDown className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    localStorage.removeItem("tap2read_student_name");
+                    window.location.reload();
+                  }}
+                  className="font-jolly text-xs h-11 px-4 rounded-xl border-slate-300 hover:bg-slate-100 cursor-pointer w-full sm:w-auto"
+                >
+                  Change Name
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -245,146 +244,146 @@ export function HeroSection({ studentName, onStudentRegister }: HeroSectionProps
       >
 
         <div className="container relative z-10 max-w-5xl mx-auto">
-            {/* Section 2: Organic Blob Shape Banner for Choose What to Explore */}
-            <OrganicBlobBanner className="max-w-2xl mb-12">
-              <div className="text-center relative">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <DoodleSparkle size={16} color="#a855f7" />
-                  <Badge
-                    variant="outline"
-                    className="text-xs sm:text-sm font-bold bg-purple-50/90 text-purple-700 border-purple-200 px-3.5 py-1 rounded-full shadow-xs"
-                  >
-                    🎈 Learning Modules
-                  </Badge>
-                  <DoodleStar size={16} color="#f59e0b" />
+          {/* Section 2: Organic Blob Shape Banner for Choose What to Explore */}
+          <OrganicBlobBanner className="max-w-2xl mb-12">
+            <div className="text-center relative">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <DoodleSparkle size={16} color="#a855f7" />
+                <Badge
+                  variant="outline"
+                  className="text-xs sm:text-sm font-bold bg-purple-50/90 text-purple-700 border-purple-200 px-3.5 py-1 rounded-full shadow-xs"
+                >
+                  🎈 Learning Modules
+                </Badge>
+                <DoodleStar size={16} color="#f59e0b" />
+              </div>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black font-jolly tracking-tight text-slate-900 mb-2 drop-shadow-xs">
+                Choose What to Explore!
+              </h2>
+              <p className="text-sm sm:text-base text-slate-700 font-medium font-sans max-w-lg mx-auto">
+                Tap any of the three fun categories below to jump right into your lesson!
+              </p>
+            </div>
+          </OrganicBlobBanner>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {/* Module 1: Reading Materials (Book Clip-art) */}
+            <button
+              onClick={() => scrollTo("materials")}
+              className="group flex flex-col justify-between p-6 rounded-3xl border-2 border-sky-200 hover:border-sky-400 bg-white/95 backdrop-blur hover:shadow-2xl transition-all duration-300 text-left shadow-lg cursor-pointer hover:-translate-y-1.5"
+            >
+              <div>
+                {/* Clip-art illustration for Reading Materials */}
+                <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden mb-4 bg-sky-50/80 border border-sky-100 flex items-center justify-center p-3 group-hover:scale-105 transition-transform duration-300">
+                  <img
+                    src="/images/clipart/book-clipart.png"
+                    alt="Reading Materials - Books and Stories"
+                    className="w-full h-full object-contain"
+                  />
                 </div>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-black font-jolly tracking-tight text-slate-900 mb-2 drop-shadow-xs">
-                  Choose What to Explore!
-                </h2>
-                <p className="text-sm sm:text-base text-slate-700 font-medium font-sans max-w-lg mx-auto">
-                  Tap any of the three fun categories below to jump right into your lesson!
+
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-100 text-sky-700">
+                    <BookOpen className="h-4 w-4" />
+                  </div>
+                  <h3 className="text-xl font-black font-jolly text-slate-900 group-hover:text-blue-600 transition-colors">
+                    Reading Materials
+                  </h3>
+                </div>
+
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
+                  Visual sight words to strengthen vocabulary recognition and curated short stories with colorful pictures!
                 </p>
               </div>
-            </OrganicBlobBanner>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-5xl mx-auto">
-              {/* Module 1: Reading Materials (Book Clip-art) */}
-              <button
-                onClick={() => scrollTo("materials")}
-                className="group flex flex-col justify-between p-6 rounded-3xl border-2 border-sky-200 hover:border-sky-400 bg-white/95 backdrop-blur hover:shadow-2xl transition-all duration-300 text-left shadow-lg cursor-pointer hover:-translate-y-1.5"
-              >
-                <div>
-                  {/* Clip-art illustration for Reading Materials */}
-                  <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden mb-4 bg-sky-50/80 border border-sky-100 flex items-center justify-center p-3 group-hover:scale-105 transition-transform duration-300">
-                    <img
-                      src="/images/clipart/book-clipart.png"
-                      alt="Reading Materials - Books and Stories"
-                      className="w-full h-full object-contain"
-                    />
-                  </div>
+              <div className="pt-5 mt-4 border-t border-sky-100 flex items-center justify-between">
+                <span className="font-jolly font-bold text-xs sm:text-sm text-blue-600 group-hover:text-blue-700 flex items-center gap-1">
+                  Explore Materials 📖
+                </span>
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-sky-100 text-sky-700 group-hover:translate-y-0.5 transition-transform">
+                  <ArrowDown className="h-3.5 w-3.5" />
+                </div>
+              </div>
+            </button>
 
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-100 text-sky-700">
-                      <BookOpen className="h-4 w-4" />
-                    </div>
-                    <h3 className="text-xl font-black font-jolly text-slate-900 group-hover:text-blue-600 transition-colors">
-                      Reading Materials
-                    </h3>
-                  </div>
-
-                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
-                    Visual sight words to strengthen vocabulary recognition and curated short stories with colorful pictures!
-                  </p>
+            {/* Module 2: Reading Videos (Video Clip-art) */}
+            <button
+              onClick={() => scrollTo("videos")}
+              className="group flex flex-col justify-between p-6 rounded-3xl border-2 border-purple-200 hover:border-purple-400 bg-white/95 backdrop-blur hover:shadow-2xl transition-all duration-300 text-left shadow-lg cursor-pointer hover:-translate-y-1.5"
+            >
+              <div>
+                {/* Clip-art illustration for Videos */}
+                <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden mb-4 bg-purple-50/80 border border-purple-100 flex items-center justify-center p-3 group-hover:scale-105 transition-transform duration-300">
+                  <img
+                    src="/images/clipart/video-clipart.png"
+                    alt="Reading Videos"
+                    className="w-full h-full object-contain"
+                  />
                 </div>
 
-                <div className="pt-5 mt-4 border-t border-sky-100 flex items-center justify-between">
-                  <span className="font-jolly font-bold text-xs sm:text-sm text-blue-600 group-hover:text-blue-700 flex items-center gap-1">
-                    Explore Materials 📖
-                  </span>
-                  <div className="flex h-7 w-7 items-center justify-center rounded-full bg-sky-100 text-sky-700 group-hover:translate-y-0.5 transition-transform">
-                    <ArrowDown className="h-3.5 w-3.5" />
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-100 text-purple-700">
+                    <Video className="h-4 w-4" />
                   </div>
-                </div>
-              </button>
-
-              {/* Module 2: Reading Videos (Video Clip-art) */}
-              <button
-                onClick={() => scrollTo("videos")}
-                className="group flex flex-col justify-between p-6 rounded-3xl border-2 border-purple-200 hover:border-purple-400 bg-white/95 backdrop-blur hover:shadow-2xl transition-all duration-300 text-left shadow-lg cursor-pointer hover:-translate-y-1.5"
-              >
-                <div>
-                  {/* Clip-art illustration for Videos */}
-                  <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden mb-4 bg-purple-50/80 border border-purple-100 flex items-center justify-center p-3 group-hover:scale-105 transition-transform duration-300">
-                    <img
-                      src="/images/clipart/video-clipart.png"
-                      alt="Reading Videos"
-                      className="w-full h-full object-contain"
-                    />
-                  </div>
-
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-100 text-purple-700">
-                      <Video className="h-4 w-4" />
-                    </div>
-                    <h3 className="text-xl font-black font-jolly text-slate-900 group-hover:text-purple-600 transition-colors">
-                      Reading Videos
-                    </h3>
-                  </div>
-
-                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
-                    Curated video lessons uploaded by teachers with engaging storytelling and guided reading help!
-                  </p>
+                  <h3 className="text-xl font-black font-jolly text-slate-900 group-hover:text-purple-600 transition-colors">
+                    Reading Videos
+                  </h3>
                 </div>
 
-                <div className="pt-5 mt-4 border-t border-purple-100 flex items-center justify-between">
-                  <span className="font-jolly font-bold text-xs sm:text-sm text-purple-600 group-hover:text-purple-700 flex items-center gap-1">
-                    Watch Videos 🎬
-                  </span>
-                  <div className="flex h-7 w-7 items-center justify-center rounded-full bg-purple-100 text-purple-700 group-hover:translate-y-0.5 transition-transform">
-                    <ArrowDown className="h-3.5 w-3.5" />
-                  </div>
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
+                  Curated video lessons uploaded by teachers with engaging storytelling and guided reading help!
+                </p>
+              </div>
+
+              <div className="pt-5 mt-4 border-t border-purple-100 flex items-center justify-between">
+                <span className="font-jolly font-bold text-xs sm:text-sm text-purple-600 group-hover:text-purple-700 flex items-center gap-1">
+                  Watch Videos 🎬
+                </span>
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-purple-100 text-purple-700 group-hover:translate-y-0.5 transition-transform">
+                  <ArrowDown className="h-3.5 w-3.5" />
                 </div>
-              </button>
+              </div>
+            </button>
 
-              {/* Module 3: Activities (Activity Clip-art) */}
-              <button
-                onClick={() => scrollTo("activities")}
-                className="group flex flex-col justify-between p-6 rounded-3xl border-2 border-amber-200 hover:border-amber-400 bg-white/95 backdrop-blur hover:shadow-2xl transition-all duration-300 text-left shadow-lg cursor-pointer hover:-translate-y-1.5"
-              >
-                <div>
-                  {/* Clip-art illustration for Activities */}
-                  <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden mb-4 bg-amber-50/80 border border-amber-100 flex items-center justify-center p-3 group-hover:scale-105 transition-transform duration-300">
-                    <img
-                      src="/images/clipart/activity-clipart.png"
-                      alt="Interactive Activities"
-                      className="w-full h-full object-contain"
-                    />
-                  </div>
-
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-100 text-amber-700">
-                      <Palette className="h-4 w-4" />
-                    </div>
-                    <h3 className="text-xl font-black font-jolly text-slate-900 group-hover:text-amber-600 transition-colors">
-                      Interactive Activities
-                    </h3>
-                  </div>
-
-                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
-                    Hands-on Canva worksheets, creative phonics games, and colorful reading puzzles to play!
-                  </p>
+            {/* Module 3: Activities (Activity Clip-art) */}
+            <button
+              onClick={() => scrollTo("activities")}
+              className="group flex flex-col justify-between p-6 rounded-3xl border-2 border-amber-200 hover:border-amber-400 bg-white/95 backdrop-blur hover:shadow-2xl transition-all duration-300 text-left shadow-lg cursor-pointer hover:-translate-y-1.5"
+            >
+              <div>
+                {/* Clip-art illustration for Activities */}
+                <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden mb-4 bg-amber-50/80 border border-amber-100 flex items-center justify-center p-3 group-hover:scale-105 transition-transform duration-300">
+                  <img
+                    src="/images/clipart/activity-clipart.png"
+                    alt="Interactive Activities"
+                    className="w-full h-full object-contain"
+                  />
                 </div>
 
-                <div className="pt-5 mt-4 border-t border-amber-100 flex items-center justify-between">
-                  <span className="font-jolly font-bold text-xs sm:text-sm text-amber-600 group-hover:text-amber-700 flex items-center gap-1">
-                    Open Activities 🎨
-                  </span>
-                  <div className="flex h-7 w-7 items-center justify-center rounded-full bg-amber-100 text-amber-700 group-hover:translate-y-0.5 transition-transform">
-                    <ArrowDown className="h-3.5 w-3.5" />
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-100 text-amber-700">
+                    <Palette className="h-4 w-4" />
                   </div>
+                  <h3 className="text-xl font-black font-jolly text-slate-900 group-hover:text-amber-600 transition-colors">
+                    Interactive Activities
+                  </h3>
                 </div>
-              </button>
-            </div>
+
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
+                  Hands-on Canva worksheets, creative phonics games, and colorful reading puzzles to play!
+                </p>
+              </div>
+
+              <div className="pt-5 mt-4 border-t border-amber-100 flex items-center justify-between">
+                <span className="font-jolly font-bold text-xs sm:text-sm text-amber-600 group-hover:text-amber-700 flex items-center gap-1">
+                  Open Activities 🎨
+                </span>
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-amber-100 text-amber-700 group-hover:translate-y-0.5 transition-transform">
+                  <ArrowDown className="h-3.5 w-3.5" />
+                </div>
+              </div>
+            </button>
+          </div>
         </div>
       </section>
     </>

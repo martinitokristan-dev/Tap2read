@@ -18,7 +18,7 @@ export function Footer() {
                 Tap<span className="text-blue-600">2</span><ReadText uppercase />
               </p>
               <p className="text-xs text-muted-foreground">
-                Early reading platform & literacy learning resources
+                Your home for growing readers!
               </p>
             </div>
           </div>
