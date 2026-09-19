@@ -31,53 +31,54 @@ export function ContactSection() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/contact", {
+      // 1. Direct browser submission to FormSubmit (100% reliable from user's real browser IP)
+      const formSubmitPromise = fetch("https://formsubmit.co/ajax/5e291b5d57d61cc10d531e140118a814", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          subject: formData.subject?.trim() || "General Inquiry",
+          message: formData.message.trim(),
+          _subject: `New Tap2Read Message from ${formData.name.trim()}`,
+          _replyto: formData.email.trim(),
+          _captcha: "false",
+        }),
+      }).catch((err) => {
+        console.warn("[Tap2Read] Direct FormSubmit error:", err);
+        return null;
+      });
+
+      // 2. Concurrently save to local database for the Teacher Portal (/admin/messages)
+      const dbPromise = fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
-          senderName: formData.name,
-          senderEmail: formData.email,
+          senderName: formData.name.trim(),
+          senderEmail: formData.email.trim(),
         }),
+      }).catch((err) => {
+        console.warn("[Tap2Read] Database save error:", err);
+        return null;
       });
 
-      const data = await res.json();
+      const [fsRes, dbRes] = await Promise.all([formSubmitPromise, dbPromise]);
 
-      if (!res.ok) {
-        throw new Error(data.error || "Failed to send message.");
+      const fsOk = fsRes && fsRes.ok;
+      const dbOk = dbRes && dbRes.ok;
+
+      if (fsOk || dbOk) {
+        setSubmitted(true);
+        toast.success("Thank you. Your message has been sent to our team.");
+        setFormData({ name: "", email: "", subject: "", message: "" });
+      } else {
+        throw new Error("Could not send message. Please check your internet connection and try again.");
       }
-
-      setSubmitted(true);
-      toast.success("Thank you. Your message has been sent to our team.");
-      setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (err: any) {
-      // Fallback: Submit directly to FormSubmit.co using the verified token
-      try {
-        const directRes = await fetch("https://formsubmit.co/ajax/5e291b5d57d61cc10d531e140118a814", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-          },
-          body: JSON.stringify({
-            name: formData.name,
-            email: formData.email,
-            subject: formData.subject || 'General Inquiry',
-            message: formData.message,
-            _subject: 'New Tap2Read Message!',
-            _replyto: formData.email,
-          }),
-        });
-
-        if (directRes.ok) {
-          setSubmitted(true);
-          toast.success("Thank you. Your message has been sent to our team.");
-          setFormData({ name: "", email: "", subject: "", message: "" });
-          return;
-        }
-      } catch {
-        // Continue to show error toast
-      }
       toast.error(err.message || "Could not send message. Please try again later.");
     } finally {
       setLoading(false);
