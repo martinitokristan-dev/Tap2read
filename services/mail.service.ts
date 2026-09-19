@@ -15,12 +15,10 @@ export const mailService = {
       console.warn('[Tap2Read Contact] Could not save message to database:', dbError);
     }
 
-    // 2. Send via FormSubmit.co
-    // Use the verified FormSubmit token provided in the activation email.
-    // This permanently binds to bobis.sb@stud.pnu.edu.ph and never asks for activation again.
-    const rawTarget = process.env.FORMSUBMIT_EMAIL || '5e291b5d57d61cc10d531e140118a814';
-    const targetToken = rawTarget === 'bobis.sb@stud.pnu.edu.ph' ? '5e291b5d57d61cc10d531e140118a814' : rawTarget;
-    const formsubmitUrl = `https://formsubmit.co/ajax/${targetToken}`;
+    // 2. Send via FormSubmit.co directly to Bobis (bobis.sb@stud.pnu.edu.ph)
+    // '5e291b5d57d61cc10d531e140118a814' is FormSubmit's permanent token mapped directly to bobis.sb@stud.pnu.edu.ph
+    const BOBIS_FORMSUBMIT_TOKEN = '5e291b5d57d61cc10d531e140118a814';
+    const formsubmitUrl = `https://formsubmit.co/ajax/${BOBIS_FORMSUBMIT_TOKEN}`;
     try {
       const siteUrl = process.env.NEXTAUTH_URL && !process.env.NEXTAUTH_URL.includes('localhost')
         ? process.env.NEXTAUTH_URL
@@ -61,9 +59,11 @@ export const mailService = {
 
     if (hasGmailConfig) {
       try {
+        const receiver = process.env.CONTACT_RECEIVER_EMAIL || 'bobis.sb@stud.pnu.edu.ph';
+
         await transporter.sendMail({
           from: `"Tap2Read Contact Form" <${process.env.GMAIL_USER}>`,
-          to: process.env.CONTACT_RECEIVER_EMAIL || process.env.GMAIL_USER,
+          to: receiver,
           replyTo: data.senderEmail,
           subject: data.subject ? `[Tap2Read] ${data.subject}` : `[Tap2Read] Message from ${data.senderName}`,
           html: `
