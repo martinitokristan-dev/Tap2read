@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
@@ -24,6 +24,32 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const [unreadCount, setUnreadCount] = useState<number>(0);
+
+  const fetchUnreadCount = async () => {
+    try {
+      const res = await fetch("/api/messages/count");
+      if (res.ok) {
+        const data = await res.json();
+        if (data?.data?.unreadCount !== undefined) {
+          setUnreadCount(data.data.unreadCount);
+        }
+      }
+    } catch {
+      // silent
+    }
+  };
+
+  useEffect(() => {
+    fetchUnreadCount();
+    const interval = setInterval(fetchUnreadCount, 15000);
+    const handleUpdate = () => fetchUnreadCount();
+    window.addEventListener("messages-updated", handleUpdate);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("messages-updated", handleUpdate);
+    };
+  }, [pathname]);
 
   // If on login page, render clean layout without navigation bar
   if (pathname === "/admin/login") {
@@ -70,19 +96,27 @@ export default function AdminLayout({
                 link.href === "/admin"
                   ? pathname === "/admin"
                   : pathname.startsWith(link.href);
+              const isMessages = link.href === "/admin/messages";
 
               return (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`flex items-center gap-2.5 px-3 py-2 rounded-md text-xs font-medium transition-colors ${
+                  className={`flex items-center justify-between px-3 py-2 rounded-md text-xs font-medium transition-colors ${
                     isActive
                       ? "bg-secondary text-foreground font-semibold"
                       : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   }`}
                 >
-                  <Icon className="h-3.5 w-3.5" />
-                  <span>{link.label}</span>
+                  <div className="flex items-center gap-2.5">
+                    <Icon className="h-3.5 w-3.5" />
+                    <span>{link.label}</span>
+                  </div>
+                  {isMessages && unreadCount > 0 && (
+                    <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1.5 text-[10px] font-bold text-white bg-red-500 rounded-full shadow-xs animate-in zoom-in-75">
+                      {unreadCount > 99 ? "99+" : unreadCount}
+                    </span>
+                  )}
                 </Link>
               );
             })}

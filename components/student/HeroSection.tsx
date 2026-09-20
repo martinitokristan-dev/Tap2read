@@ -204,11 +204,9 @@ export function HeroSection({ studentName, onStudentRegister }: HeroSectionProps
               </div>
 
               <div className="flex flex-col items-center justify-center gap-2 pt-2">
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 shadow-inner">
-                  <CheckCircle2 className="h-8 w-8 text-emerald-600" />
-                </div>
+                <CheckCircle2 className="h-12 w-12 text-emerald-600" />
                 <h3 className="text-2xl font-black font-jolly text-slate-900 mt-1 flex items-center justify-center gap-2">
-                  <span>Welcome back, {studentName}!</span>
+                  <span>Welcome, {studentName}!</span>
                   <PartyPopper className="h-6 w-6 text-amber-500 shrink-0" />
                 </h3>
               </div>

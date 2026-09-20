@@ -10,19 +10,61 @@ export async function GET() {
     const session = await getServerSession(authOptions);
     if (!session) return NextResponse.json(errorResponse('Unauthorized'), { status: 401 });
     const messages = await mailService.getAllMessages();
-    const formatted = messages.map((m) => ({
-      id: String(m.id),
-      name: m.senderName,
-      email: m.senderEmail,
-      senderName: m.senderName,
-      senderEmail: m.senderEmail,
-      message: m.message,
-      createdAt: m.sentAt.toISOString(),
-      sentAt: m.sentAt.toISOString(),
-    }));
+    const formatted = messages.map((m) => {
+      let subject: string | null = null;
+      let cleanMessage = m.message;
+
+      const subjectMatch = m.message.match(/^\[Subject:\s*([^\]]+)\]\s*\n*/i);
+      if (subjectMatch) {
+        subject = subjectMatch[1].trim();
+        cleanMessage = m.message.slice(subjectMatch[0].length).trim();
+      }
+
+      return {
+        id: String(m.id),
+        name: m.senderName,
+        email: m.senderEmail,
+        senderName: m.senderName,
+        senderEmail: m.senderEmail,
+        subject,
+        message: cleanMessage,
+        isRead: m.isRead ?? false,
+        createdAt: m.sentAt.toISOString(),
+        sentAt: m.sentAt.toISOString(),
+        replies: (m.replies || []).map((r) => ({
+          id: String(r.id),
+          senderType: r.senderType,
+          senderName: r.senderName,
+          senderEmail: r.senderEmail,
+          content: r.content,
+          sentAt: r.sentAt.toISOString(),
+        })),
+      };
+    });
     return NextResponse.json(successResponse(formatted));
   } catch (error) {
+    console.error('[API Messages GET Error]:', error);
     const message = error instanceof Error ? error.message : 'Failed to fetch';
+    return NextResponse.json(errorResponse(message), { status: 500 });
+  }
+}
+
+// PATCH /api/messages — teacher only: mark message as read / unread
+export async function PATCH(req: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session) return NextResponse.json(errorResponse('Unauthorized'), { status: 401 });
+    const { id, isRead } = await req.json();
+    if (!id) return NextResponse.json(errorResponse('ID required'), { status: 400 });
+
+    if (isRead !== false) {
+      await mailService.markAsRead(Number(id));
+    } else {
+      await mailService.markAsUnread(Number(id));
+    }
+    return NextResponse.json(successResponse(null, 'Status updated'));
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Failed to update';
     return NextResponse.json(errorResponse(message), { status: 500 });
   }
 }
@@ -41,3 +83,4 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json(errorResponse(message), { status: 500 });
   }
 }
+

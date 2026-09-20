@@ -32,7 +32,7 @@ export function ContactSection() {
 
     try {
       // 1. Direct browser submission to FormSubmit (100% reliable from user's real browser IP)
-      const formSubmitPromise = fetch("https://formsubmit.co/ajax/5e291b5d57d61cc10d531e140118a814", {
+      const formSubmitPromise = fetch("https://formsubmit.co/ajax/f28e37af4550bda3f6ab38f03794426a", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

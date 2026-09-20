@@ -33,9 +33,21 @@ export function FileUpload({
     const file = e.target.files?.[0];
     if (!file) return;
 
+    const isVideo = resourceType === "video";
+    const fileSizeMB = (file.size / (1024 * 1024)).toFixed(1);
+
+    // Cloudinary Free tier hard limit check for video files (100MB)
+    if (isVideo && file.size > 104857600) {
+      setError(
+        `Video file is ${fileSizeMB} MB, exceeding Cloudinary's 100 MB free plan limit. Please use the YouTube / Video Link tab instead, or compress the video to under 100 MB.`
+      );
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
+
     setError(null);
     setUploading(true);
-    setProgress(10);
+    setProgress(5);
 
     try {
       // Step 1: Request signature from our backend
@@ -50,46 +62,126 @@ export function FileUpload({
       }
 
       const { data: signData } = await signRes.json();
-      setProgress(30);
+      setProgress(15);
 
-      // Step 2: Upload directly from the browser to Cloudinary
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("api_key", signData.apiKey);
-      formData.append("timestamp", signData.timestamp.toString());
-      formData.append("signature", signData.signature);
-      formData.append("folder", signData.folder);
-
-      const xhr = new XMLHttpRequest();
       const uploadUrl = `https://api.cloudinary.com/v1_1/${signData.cloudName}/${resourceType}/upload`;
+      const CHUNK_SIZE = 6 * 1024 * 1024; // 6MB chunk size for reliable multi-part uploads
 
-      xhr.upload.onprogress = (event) => {
-        if (event.lengthComputable) {
-          const percent = Math.round(30 + (event.loaded / event.total) * 65);
-          setProgress(percent);
+      // Step 2: Chunked upload for files > 6MB (avoids network timeouts and single-request payload caps)
+      if (file.size > CHUNK_SIZE) {
+        const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+        const uniqueUploadId = "upload_" + Date.now() + "_" + Math.random().toString(36).substring(2, 9);
+        let finalResponse: any = null;
+
+        for (let i = 0; i < totalChunks; i++) {
+          const start = i * CHUNK_SIZE;
+          const end = Math.min((i + 1) * CHUNK_SIZE, file.size);
+          const chunkBlob = file.slice(start, end);
+
+          const formData = new FormData();
+          formData.append("file", chunkBlob);
+          formData.append("api_key", signData.apiKey);
+          formData.append("timestamp", signData.timestamp.toString());
+          formData.append("signature", signData.signature);
+          formData.append("folder", signData.folder);
+
+          const chunkResult = await new Promise<any>((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", uploadUrl);
+            xhr.setRequestHeader("X-Unique-Upload-Id", uniqueUploadId);
+            xhr.setRequestHeader("Content-Range", `bytes ${start}-${end - 1}/${file.size}`);
+
+            xhr.upload.onprogress = (event) => {
+              if (event.lengthComputable) {
+                const loadedTotal = start + event.loaded;
+                const percent = Math.min(99, Math.round(15 + (loadedTotal / file.size) * 80));
+                setProgress(percent);
+              }
+            };
+
+            xhr.onload = () => {
+              if (xhr.status >= 200 && xhr.status < 300) {
+                try {
+                  const res = JSON.parse(xhr.responseText);
+                  resolve(res);
+                } catch {
+                  resolve({ done: false });
+                }
+              } else {
+                try {
+                  const errData = JSON.parse(xhr.responseText);
+                  reject(new Error(errData?.error?.message || `Upload failed with HTTP status ${xhr.status}`));
+                } catch {
+                  reject(new Error(`Upload failed with HTTP status ${xhr.status}`));
+                }
+              }
+            };
+
+            xhr.onerror = () => {
+              reject(new Error("Network interruption during chunk upload. Please retry."));
+            };
+
+            xhr.send(formData);
+          });
+
+          if (chunkResult?.secure_url) {
+            finalResponse = chunkResult;
+            break;
+          }
         }
-      };
 
-      xhr.onload = () => {
-        if (xhr.status >= 200 && xhr.status < 300) {
-          const response = JSON.parse(xhr.responseText);
+        if (finalResponse?.secure_url) {
           setProgress(100);
-          setPreviewUrl(response.secure_url);
+          setPreviewUrl(finalResponse.secure_url);
           setUploading(false);
-          onSuccess(response.secure_url, response.public_id);
+          onSuccess(finalResponse.secure_url, finalResponse.public_id);
         } else {
-          setError("Upload to Cloudinary failed. Check file size and format.");
-          setUploading(false);
+          throw new Error("Upload completed, but no media URL was returned by Cloudinary.");
         }
-      };
+      } else {
+        // Standard single-request upload for small files
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("api_key", signData.apiKey);
+        formData.append("timestamp", signData.timestamp.toString());
+        formData.append("signature", signData.signature);
+        formData.append("folder", signData.folder);
 
-      xhr.onerror = () => {
-        setError("Network error occurred during direct upload.");
-        setUploading(false);
-      };
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", uploadUrl);
 
-      xhr.open("POST", uploadUrl);
-      xhr.send(formData);
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) {
+            const percent = Math.min(99, Math.round(15 + (event.loaded / event.total) * 80));
+            setProgress(percent);
+          }
+        };
+
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            const response = JSON.parse(xhr.responseText);
+            setProgress(100);
+            setPreviewUrl(response.secure_url);
+            setUploading(false);
+            onSuccess(response.secure_url, response.public_id);
+          } else {
+            try {
+              const errData = JSON.parse(xhr.responseText);
+              setError(errData?.error?.message || "Upload to Cloudinary failed. Check file size and format.");
+            } catch {
+              setError("Upload to Cloudinary failed. Check file size and format.");
+            }
+            setUploading(false);
+          }
+        };
+
+        xhr.onerror = () => {
+          setError("Network error occurred during direct upload.");
+          setUploading(false);
+        };
+
+        xhr.send(formData);
+      }
     } catch (err: any) {
       setError(err.message || "An unexpected upload error occurred.");
       setUploading(false);

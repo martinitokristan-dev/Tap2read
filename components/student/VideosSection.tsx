@@ -18,6 +18,7 @@ import {
   DoodleSparkle,
   BrushSquiggle,
 } from "@/components/shared/HandcraftedElements";
+import { isYouTubeUrl, getYouTubeEmbedUrl, resolveVideoThumbnail } from "@/lib/video";
 
 interface VideoItem {
   id: string;
@@ -89,52 +90,61 @@ export function VideosSection({ videos }: VideosSectionProps) {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {videos.map((vid) => (
-              <Card
-                key={vid.id}
-                onClick={() => setActiveVideo(vid)}
-                className="group cursor-pointer overflow-hidden border-2 border-purple-100 hover:border-purple-400 transition-all duration-300 rounded-3xl bg-white shadow-md hover:shadow-xl hover:-translate-y-1 flex flex-col"
-              >
-                <div className="relative aspect-video w-full bg-purple-900/10 flex items-center justify-center overflow-hidden border-b border-purple-100">
-                  {vid.thumbnailUrl ? (
-                    <img
-                      src={vid.thumbnailUrl}
-                      alt={vid.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  ) : (
-                    <video
-                      src={vid.videoUrl}
-                      className="w-full h-full object-cover"
-                    />
-                  )}
-                  {/* Play Button Overlay */}
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/25 group-hover:bg-black/35 transition-colors">
-                    <div className="h-12 w-12 rounded-full bg-white text-purple-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                      <Play className="h-5 w-5 fill-purple-600 ml-0.5" />
+            {videos.map((vid) => {
+              const thumbnail = resolveVideoThumbnail(vid.videoUrl, vid.thumbnailUrl);
+              return (
+                <Card
+                  key={vid.id}
+                  onClick={() => setActiveVideo(vid)}
+                  className="group cursor-pointer overflow-hidden border-2 border-purple-100 hover:border-purple-400 transition-all duration-300 rounded-3xl bg-white shadow-md hover:shadow-xl hover:-translate-y-1 flex flex-col"
+                >
+                  <div className="relative aspect-video w-full bg-slate-900 flex items-center justify-center overflow-hidden border-b border-purple-100">
+                    {thumbnail ? (
+                      <img
+                        src={thumbnail}
+                        alt={vid.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                          (e.target as HTMLElement).style.display = "none";
+                        }}
+                      />
+                    ) : (
+                      <video
+                        src={`${vid.videoUrl}#t=0.5`}
+                        preload="metadata"
+                        muted
+                        playsInline
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 pointer-events-none"
+                      />
+                    )}
+                    {/* Play Button Overlay */}
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/25 group-hover:bg-black/35 transition-colors">
+                      <div className="h-12 w-12 rounded-full bg-white text-purple-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                        <Play className="h-5 w-5 fill-purple-600 ml-0.5" />
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <CardContent className="p-5 flex-1 flex flex-col justify-between">
-                  <div>
-                    <h3 className="text-lg font-black font-jolly text-slate-900 mb-1.5 group-hover:text-purple-600 transition-colors line-clamp-1">
-                      {vid.title}
-                    </h3>
-                    {vid.description && (
-                      <p className="text-xs sm:text-sm text-slate-600 line-clamp-2 leading-relaxed font-medium">
-                        {vid.description}
-                      </p>
-                    )}
-                  </div>
-                  <div className="pt-4 flex items-center border-t border-purple-100 mt-4">
-                    <span className="text-xs sm:text-sm font-bold font-jolly text-purple-600 flex items-center gap-1.5 group-hover:text-purple-700">
-                      <Play className="h-3.5 w-3.5 fill-purple-600" /> Watch Lesson
-                    </span>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                  <CardContent className="p-5 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="text-lg font-black font-jolly text-slate-900 mb-1.5 group-hover:text-purple-600 transition-colors line-clamp-1">
+                        {vid.title}
+                      </h3>
+                      {vid.description && (
+                        <p className="text-xs sm:text-sm text-slate-600 line-clamp-2 leading-relaxed font-medium">
+                          {vid.description}
+                        </p>
+                      )}
+                    </div>
+                    <div className="pt-4 flex items-center border-t border-purple-100 mt-4">
+                      <span className="text-xs sm:text-sm font-bold font-jolly text-purple-600 flex items-center gap-1.5 group-hover:text-purple-700">
+                        <Play className="h-3.5 w-3.5 fill-purple-600" /> Watch Lesson
+                      </span>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         )}
       </div>
@@ -156,12 +166,22 @@ export function VideosSection({ videos }: VideosSectionProps) {
               </DialogHeader>
 
               <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-black shadow-xl border-2 border-purple-100">
-                <video
-                  src={activeVideo.videoUrl}
-                  controls
-                  autoPlay
-                  className="w-full h-full object-contain"
-                />
+                {isYouTubeUrl(activeVideo.videoUrl) ? (
+                  <iframe
+                    src={getYouTubeEmbedUrl(activeVideo.videoUrl)}
+                    title={activeVideo.title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                    className="w-full h-full border-0"
+                  />
+                ) : (
+                  <video
+                    src={activeVideo.videoUrl}
+                    controls
+                    autoPlay
+                    className="w-full h-full object-contain"
+                  />
+                )}
               </div>
             </div>
           )}

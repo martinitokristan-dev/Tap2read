@@ -86,11 +86,27 @@ model StudentSession {
 }
 
 model ContactMessage {
-  id          Int      @id @default(autoincrement())
-  senderName  String   @db.VarChar(150)
-  senderEmail String   @db.VarChar(150)
-  message     String   @db.Text
-  sentAt      DateTime @default(now())
+  id          Int            @id @default(autoincrement())
+  senderName  String         @db.VarChar(150)
+  senderEmail String         @db.VarChar(150)
+  message     String         @db.Text
+  isRead      Boolean        @default(false)
+  sentAt      DateTime       @default(now())
+  replies     ContactReply[]
 
   @@map("contact_messages")
 }
+
+model ContactReply {
+  id          Int            @id @default(autoincrement())
+  messageId   Int
+  message     ContactMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  senderType  String         @db.VarChar(20) // "TEACHER" or "VISITOR"
+  senderName  String         @db.VarChar(150)
+  senderEmail String         @db.VarChar(150)
+  content     String         @db.Text
+  sentAt      DateTime       @default(now())
+
+  @@map("contact_replies")
+}
+

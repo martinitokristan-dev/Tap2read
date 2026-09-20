@@ -22,7 +22,21 @@ export async function PUT(req: NextRequest, { params }: Params) {
     const session = await getServerSession(authOptions);
     if (!session) return NextResponse.json(errorResponse('Unauthorized'), { status: 401 });
     const body = await req.json();
-    const item = await videoService.update(Number(params.id), body);
+    const { title, description, videoUrl, thumbnailUrl } = body;
+
+    const updateData: Partial<{
+      title: string;
+      description: string;
+      videoUrl: string;
+      thumbnailUrl: string;
+    }> = {};
+
+    if (title !== undefined) updateData.title = title.trim();
+    if (description !== undefined) updateData.description = description.trim();
+    if (videoUrl !== undefined) updateData.videoUrl = videoUrl.trim();
+    if (thumbnailUrl !== undefined) updateData.thumbnailUrl = thumbnailUrl;
+
+    const item = await videoService.update(Number(params.id), updateData as any);
     return NextResponse.json(successResponse(item, 'Video updated'));
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Failed to update';

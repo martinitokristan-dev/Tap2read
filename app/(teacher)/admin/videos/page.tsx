@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Plus, Trash2, Edit, Video, AlertCircle, Loader2, Play } from "lucide-react";
+import { Plus, Trash2, Edit, Video, AlertCircle, Loader2, Play, Link as LinkIcon, Upload, CheckCircle2 } from "lucide-react";
 import {
   Table,
   TableHeader,
@@ -32,6 +32,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { FileUpload } from "@/components/shared/FileUpload";
+import { isYouTubeUrl, getYouTubeEmbedUrl, getYouTubeThumbnail, resolveVideoThumbnail } from "@/lib/video";
 import { toast } from "sonner";
 
 interface VideoItem {
@@ -40,6 +41,7 @@ interface VideoItem {
   description?: string | null;
   videoUrl: string;
   videoPublicId?: string | null;
+  thumbnailUrl?: string | null;
   createdAt: string;
 }
 
@@ -50,9 +52,11 @@ export default function AdminVideosPage() {
   // Form dialog state
   const [modalOpen, setModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<VideoItem | null>(null);
+  const [sourceMode, setSourceMode] = useState<"link" | "upload">("link");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
+  const [thumbnailUrl, setThumbnailUrl] = useState("");
   const [videoPublicId, setVideoPublicId] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -80,7 +84,9 @@ export default function AdminVideosPage() {
     setTitle("");
     setDescription("");
     setVideoUrl("");
+    setThumbnailUrl("");
     setVideoPublicId("");
+    setSourceMode("link");
     setModalOpen(true);
   };
 
@@ -89,7 +95,10 @@ export default function AdminVideosPage() {
     setTitle(item.title);
     setDescription(item.description || "");
     setVideoUrl(item.videoUrl);
+    const cleanThumb = item.thumbnailUrl?.includes("unsplash.com") ? "" : item.thumbnailUrl;
+    setThumbnailUrl(cleanThumb || "");
     setVideoPublicId(item.videoPublicId || "");
+    setSourceMode(isYouTubeUrl(item.videoUrl) ? "link" : "upload");
     setModalOpen(true);
   };
 
@@ -99,8 +108,8 @@ export default function AdminVideosPage() {
       toast.error("Please enter a video title.");
       return;
     }
-    if (!videoUrl) {
-      toast.error("Please upload a video file.");
+    if (!videoUrl.trim()) {
+      toast.error("Please provide a video URL or upload a file.");
       return;
     }
 
@@ -111,14 +120,28 @@ export default function AdminVideosPage() {
       const url = isEdit ? `/api/videos/${editingItem.id}` : "/api/videos";
       const method = isEdit ? "PUT" : "POST";
 
+      let finalThumbnail = thumbnailUrl;
+      if (finalThumbnail?.includes("unsplash.com")) {
+        finalThumbnail = "";
+      }
+
+      if (isYouTubeUrl(videoUrl)) {
+        finalThumbnail = getYouTubeThumbnail(videoUrl) || "";
+      } else if (videoUrl.includes("cloudinary.com")) {
+        finalThumbnail = videoUrl.replace(/\.[^/.]+$/, ".jpg");
+      } else {
+        // Direct web video or MP4: clear so native video frame #t=0.5 is rendered
+        finalThumbnail = "";
+      }
+
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title: title.trim(),
           description: description.trim(),
-          videoUrl,
-          videoPublicId,
+          videoUrl: videoUrl.trim(),
+          thumbnailUrl: finalThumbnail,
         }),
       });
 
@@ -128,7 +151,7 @@ export default function AdminVideosPage() {
         throw new Error(result.error || "Failed to save video.");
       }
 
-      toast.success(isEdit ? "Video updated!" : "Video uploaded!");
+      toast.success(isEdit ? "Video updated!" : "Video created!");
       setModalOpen(false);
       loadItems();
     } catch (err: any) {
@@ -224,50 +247,70 @@ export default function AdminVideosPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {items.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell>
-                  <div className="h-12 w-20 rounded-xl overflow-hidden bg-black flex items-center justify-center">
-                    <video
-                      src={item.videoUrl}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                </TableCell>
-                <TableCell className="font-bold text-slate-900">{item.title}</TableCell>
-                <TableCell className="hidden md:table-cell text-xs text-slate-500 line-clamp-1 max-w-xs">
-                  {item.description || "No description"}
-                </TableCell>
-                <TableCell className="text-right space-x-2">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => openEdit(item)}
-                    className="h-8 w-8 text-blue-600 hover:bg-blue-50"
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setDeletingId(item.id)}
-                    className="h-8 w-8 text-rose-600 hover:bg-rose-50"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+            {items.map((item) => {
+              const previewThumb = resolveVideoThumbnail(item.videoUrl, item.thumbnailUrl);
+              return (
+                <TableRow key={item.id}>
+                  <TableCell>
+                    <div className="h-12 w-20 rounded-xl overflow-hidden bg-slate-950 flex items-center justify-center relative shadow-inner border border-slate-200">
+                      {previewThumb ? (
+                        <img
+                          src={previewThumb}
+                          alt={item.title}
+                          className="h-full w-full object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLElement).style.display = "none";
+                          }}
+                        />
+                      ) : (
+                        <video
+                          src={`${item.videoUrl}#t=0.5`}
+                          preload="metadata"
+                          muted
+                          playsInline
+                          className="h-full w-full object-cover pointer-events-none"
+                        />
+                      )}
+                      <div className="absolute inset-0 bg-black/10 flex items-center justify-center pointer-events-none">
+                        <Play className="h-3.5 w-3.5 text-white/90 fill-white/80 drop-shadow" />
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell className="font-bold text-slate-900">{item.title}</TableCell>
+                  <TableCell className="hidden md:table-cell text-xs text-slate-500 line-clamp-1 max-w-xs">
+                    {item.description || "No description"}
+                  </TableCell>
+                  <TableCell className="text-right space-x-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => openEdit(item)}
+                      className="h-8 w-8 text-blue-600 hover:bg-blue-50"
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setDeletingId(item.id)}
+                      className="h-8 w-8 text-rose-600 hover:bg-rose-50"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       )}
 
       {/* Add / Edit Dialog */}
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="text-xl font-black">
-              {editingItem ? "Edit Video" : "Upload Video (Max 5)"}
+              {editingItem ? "Edit Video" : "Add Educational Video (Max 5)"}
             </DialogTitle>
           </DialogHeader>
 
@@ -276,7 +319,7 @@ export default function AdminVideosPage() {
               <Label htmlFor="vid-title">Video Title</Label>
               <Input
                 id="vid-title"
-                placeholder="e.g. Learning Letter Sounds"
+                placeholder="e.g. Learning Letter Sounds: A to Z"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 required
@@ -288,27 +331,128 @@ export default function AdminVideosPage() {
               <Textarea
                 id="vid-desc"
                 rows={3}
-                placeholder="Short description of the lesson..."
+                placeholder="Short description of the reading lesson..."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
             </div>
 
-            <FileUpload
-              label="Video File"
-              resourceType="video"
-              folder="tap2read/videos"
-              initialUrl={videoUrl}
-              onSuccess={(url, publicId) => {
-                setVideoUrl(url);
-                setVideoPublicId(publicId);
-              }}
-            />
+            {/* Video Source Selector */}
+            <div className="space-y-2">
+              <Label>Video Source</Label>
+              <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl border border-slate-200 text-xs font-bold">
+                <button
+                  type="button"
+                  onClick={() => setSourceMode("link")}
+                  className={`py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                    sourceMode === "link"
+                      ? "bg-white text-blue-600 shadow-sm"
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  <LinkIcon className="h-3.5 w-3.5" />
+                  YouTube / Video Link
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSourceMode("upload")}
+                  className={`py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                    sourceMode === "upload"
+                      ? "bg-white text-blue-600 shadow-sm"
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  <Upload className="h-3.5 w-3.5" />
+                  Upload MP4 File
+                </button>
+              </div>
+
+              {sourceMode === "link" ? (
+                <div className="space-y-3 pt-1">
+                  <div className="space-y-1.5">
+                    <Input
+                      placeholder="e.g. https://www.youtube.com/watch?v=... or direct MP4 URL"
+                      value={videoUrl}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setVideoUrl(val);
+                        if (isYouTubeUrl(val)) {
+                          const thumb = getYouTubeThumbnail(val);
+                          if (thumb) setThumbnailUrl(thumb);
+                        } else if (val.includes("cloudinary.com")) {
+                          setThumbnailUrl(val.replace(/\.[^/.]+$/, ".jpg"));
+                        } else {
+                          setThumbnailUrl("");
+                        }
+                      }}
+                      className="h-10 text-xs"
+                    />
+                    <p className="text-[11px] text-slate-500">
+                      Supports public &amp; unlisted YouTube videos, Vimeo, or direct MP4 URLs. Plays directly inside Tap2Read without leaving the website!
+                    </p>
+                  </div>
+
+                  {isYouTubeUrl(videoUrl) ? (
+                    <div className="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-3 space-y-2">
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-800">
+                        <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                        <span>Valid YouTube Link Detected (Ready to play inside Tap2Read)</span>
+                      </div>
+                      <div className="relative aspect-video w-full rounded-xl overflow-hidden bg-black shadow-sm">
+                        <iframe
+                          src={getYouTubeEmbedUrl(videoUrl)}
+                          title="Preview"
+                          className="w-full h-full border-0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        />
+                      </div>
+                    </div>
+                  ) : videoUrl.trim() ? (
+                    <div className="rounded-2xl border border-blue-200 bg-blue-50/70 p-3 space-y-2">
+                      <div className="flex items-center justify-between text-xs font-bold text-blue-800">
+                        <span className="flex items-center gap-1.5">
+                          <CheckCircle2 className="h-4 w-4 text-blue-600" />
+                          Video Visual Frame Preview
+                        </span>
+                        <span className="text-[11px] text-blue-600 font-medium">Visual frame of uploaded video</span>
+                      </div>
+                      <div className="relative aspect-video w-full rounded-xl overflow-hidden bg-black shadow-sm flex items-center justify-center">
+                        <video
+                          src={`${videoUrl.trim()}#t=0.5`}
+                          controls
+                          preload="metadata"
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+              ) : (
+                <div className="space-y-2 pt-1">
+                  <FileUpload
+                    label="Video File (Cloudinary)"
+                    resourceType="video"
+                    folder="tap2read/videos"
+                    initialUrl={videoUrl}
+                    onSuccess={(url, publicId) => {
+                      setVideoUrl(url);
+                      setVideoPublicId(publicId);
+                      if (url.includes("cloudinary.com")) {
+                        setThumbnailUrl(url.replace(/\.[^/.]+$/, ".jpg"));
+                      }
+                    }}
+                  />
+                  <p className="text-[11px] text-slate-500">
+                    Direct Cloudinary upload (for files up to 100 MB). For larger videos, use the YouTube Link tab above.
+                  </p>
+                </div>
+              )}
+            </div>
 
             <Button
               type="submit"
               className="w-full font-bold h-11"
-              disabled={submitting || !videoUrl}
+              disabled={submitting || !videoUrl.trim()}
             >
               {submitting ? (
                 <>

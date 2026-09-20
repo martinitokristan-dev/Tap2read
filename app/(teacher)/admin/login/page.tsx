@@ -60,16 +60,16 @@ export default function TeacherLoginPage() {
         </Link>
 
         <Card className="border-border rounded-lg shadow-sm">
-          <CardHeader className="text-left pb-4">
+          <CardHeader className="text-center flex flex-col items-center pb-4">
             <img
               src="/images/tap2read-logo.png"
               alt="Tap2Read Logo"
-              className="h-12 w-12 object-contain rounded-xl shadow-xs mb-3"
+              className="mx-auto h-14 w-14 object-contain rounded-2xl shadow-xs mb-3"
             />
-            <CardTitle className="text-lg font-semibold text-foreground">
+            <CardTitle className="text-xl font-bold text-foreground text-center">
               Teacher Portal Login
             </CardTitle>
-            <CardDescription className="text-xs text-muted-foreground">
+            <CardDescription className="text-xs text-muted-foreground text-center max-w-xs mx-auto mt-1 leading-relaxed">
               Enter your credentials to manage curriculum materials and student inquiries.
             </CardDescription>
           </CardHeader>
