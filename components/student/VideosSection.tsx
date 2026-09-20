@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Video, Play } from "lucide-react";
+import { Video, Play, Clapperboard } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -57,9 +57,10 @@ export function VideosSection({ videos }: VideosSectionProps) {
                 <DoodleSparkle size={16} color="#a855f7" />
                 <Badge
                   variant="outline"
-                  className="font-bold font-jolly text-xs sm:text-sm bg-purple-50/90 text-purple-800 border-purple-200 px-3.5 py-1 rounded-full shadow-xs"
+                  className="font-bold font-jolly text-xs sm:text-sm bg-purple-50/90 text-purple-800 border-purple-200 px-3.5 py-1 rounded-full shadow-xs inline-flex items-center gap-1.5"
                 >
-                  🎬 Teacher Video Lessons
+                  <Clapperboard className="h-4 w-4 text-purple-600" />
+                  <span>Teacher Video Lessons</span>
                 </Badge>
                 <DoodleStar size={16} color="#ec4899" />
               </div>
@@ -72,7 +73,7 @@ export function VideosSection({ videos }: VideosSectionProps) {
               </div>
 
               <p className="text-sm sm:text-base text-slate-700 font-medium font-sans max-w-lg mx-auto leading-relaxed">
-                Watch guided video lessons with your teachers and practice phonics, pronunciation, and stories!
+                The Video Materials contain sight words, CVC words, and short passages while providing models of correct pronunciation, pacing, phrasing, and expression for the learners to follow.
               </p>
             </div>
           </HandPaintedBorderBanner>

@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { BookOpen, Eye, BookOpenCheck } from "lucide-react";
+import { BookOpen, Eye, BookOpenCheck, BookCopy, SpellCheck, Star } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -59,9 +59,10 @@ export function MaterialsSection({
                 <DoodleSparkle size={16} color="#0ea5e9" />
                 <Badge
                   variant="outline"
-                  className="font-bold font-jolly text-xs sm:text-sm bg-sky-50/90 text-sky-800 border-sky-200 px-3.5 py-1 rounded-full shadow-xs"
+                  className="font-bold font-jolly text-xs sm:text-sm bg-sky-50/90 text-sky-800 border-sky-200 px-3.5 py-1 rounded-full shadow-xs inline-flex items-center gap-1.5"
                 >
-                  📚 Core Reading Curriculum
+                  <BookCopy className="h-4 w-4 text-sky-600" />
+                  <span>Core Reading Curriculum</span>
                 </Badge>
                 <DoodleStar size={16} color="#f59e0b" />
               </div>
@@ -85,18 +86,21 @@ export function MaterialsSection({
             <TabsList className="grid grid-cols-2 w-full max-w-md h-13 p-1.5 bg-sky-100/70 border border-sky-200 rounded-2xl shadow-inner">
               <TabsTrigger
                 value="sightwords"
-                className="font-jolly text-xs sm:text-sm font-bold rounded-xl data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-md transition-all"
+                className="font-jolly text-xs sm:text-sm font-bold rounded-xl data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-md transition-all inline-flex items-center justify-center gap-1.5"
               >
-                🔤 Sight Words ({sightWords.length}/5)
+                <SpellCheck className="h-4 w-4" />
+                <span>Sight Words ({sightWords.length}/5)</span>
               </TabsTrigger>
               <TabsTrigger
                 value="shortstories"
-                className="font-jolly text-xs sm:text-sm font-bold rounded-xl data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-md transition-all"
+                className="font-jolly text-xs sm:text-sm font-bold rounded-xl data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-md transition-all inline-flex items-center justify-center gap-1.5"
               >
-                📖 Short Stories ({shortStories.length}/5)
+                <BookOpen className="h-4 w-4" />
+                <span>Short Passage ({shortStories.length}/5)</span>
               </TabsTrigger>
             </TabsList>
           </div>
+
 
           {/* SIGHT WORDS TAB */}
           <TabsContent value="sightwords" className="mt-0">
@@ -134,8 +138,9 @@ export function MaterialsSection({
                             Picture Card
                           </p>
                         )}
-                        <span className="text-xs sm:text-sm font-bold text-sky-600 uppercase tracking-wider block mt-1">
-                          ⭐ Flashcard
+                        <span className="text-xs sm:text-sm font-bold text-sky-600 uppercase tracking-wider flex items-center justify-center gap-1 mt-1">
+                          <Star className="h-3.5 w-3.5 fill-sky-500 text-sky-500" />
+                          <span>Flashcard</span>
                         </span>
                       </CardContent>
                     </Card>
@@ -176,8 +181,9 @@ export function MaterialsSection({
                       <CardContent className="p-5 flex-1 flex flex-col justify-between">
                         <div>
                           <div className="flex items-center gap-1.5 mb-2">
-                            <Badge variant="secondary" className="bg-purple-100 text-purple-700 text-[10px] font-bold font-jolly">
-                              📖 Storybook
+                            <Badge variant="secondary" className="bg-purple-100 text-purple-700 text-[10px] font-bold font-jolly inline-flex items-center gap-1">
+                              <BookOpen className="h-3 w-3" />
+                              <span>Storybook</span>
                             </Badge>
                           </div>
                           <h3 className="text-lg font-black font-jolly text-slate-900 mb-2 group-hover:text-purple-600 transition-colors line-clamp-1">

@@ -50,9 +50,10 @@ export function ActivitiesSection({ activities }: ActivitiesSectionProps) {
                 <DoodleSparkle size={16} color="#f59e0b" />
                 <Badge
                   variant="outline"
-                  className="font-bold font-jolly text-xs sm:text-sm bg-amber-50/90 text-amber-800 border-amber-200 px-3.5 py-1 rounded-full shadow-xs"
+                  className="font-bold font-jolly text-xs sm:text-sm bg-amber-50/90 text-amber-800 border-amber-200 px-3.5 py-1 rounded-full shadow-xs inline-flex items-center gap-1.5"
                 >
-                  🎨 Fun Reading Games & Tasks
+                  <Palette className="h-4 w-4 text-amber-600" />
+                  <span>Fun Reading Games & Tasks</span>
                 </Badge>
                 <DoodleStar size={16} color="#ef4444" />
               </div>
@@ -107,8 +108,9 @@ export function ActivitiesSection({ activities }: ActivitiesSectionProps) {
                   <CardContent className="p-5 flex-1 flex flex-col justify-between">
                     <div>
                       <div className="flex items-center gap-1.5 mb-2">
-                        <Badge variant="secondary" className="bg-amber-100 text-amber-800 text-[10px] font-bold font-jolly">
-                          🎨 Canva Activity
+                        <Badge variant="secondary" className="bg-amber-100 text-amber-800 text-[10px] font-bold font-jolly inline-flex items-center gap-1">
+                          <Palette className="h-3 w-3" />
+                          <span>Canva Activity</span>
                         </Badge>
                       </div>
                       <h3 className="text-lg font-black font-jolly text-slate-900 mb-2 group-hover:text-amber-600 transition-colors line-clamp-1">

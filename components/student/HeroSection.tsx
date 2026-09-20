@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { ArrowDown, BookOpen, Video, Palette, CheckCircle2, ArrowRight, Loader2 } from "lucide-react";
+import { ArrowDown, BookOpen, Video, Palette, CheckCircle2, ArrowRight, Loader2, Smile, AlertTriangle, PartyPopper, Balloon, Clapperboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -143,7 +143,7 @@ export function HeroSection({ studentName, onStudentRegister }: HeroSectionProps
                   <h3 className="text-2xl sm:text-3xl font-black font-jolly text-slate-800 flex items-center justify-center gap-2">
                     <DoodleSparkle size={18} color="#38bdf8" />
                     <span>What is your name?</span>
-                    <span className="inline-block animate-bounce text-2xl">😊</span>
+                    <Smile className="inline-block animate-bounce h-7 w-7 text-amber-500" />
                   </h3>
                   <p className="text-xs sm:text-sm text-slate-500 mt-2 flex items-center justify-center gap-1.5">
                     Type your name below so we can start your reading adventure!
@@ -163,8 +163,9 @@ export function HeroSection({ studentName, onStudentRegister }: HeroSectionProps
                       className="h-12 text-base text-center font-bold font-jolly bg-sky-50/50 border-2 border-sky-200 focus-visible:ring-sky-400 rounded-2xl placeholder:font-normal placeholder:text-slate-400"
                     />
                     {error && (
-                      <p className="text-xs text-destructive font-bold font-jolly mt-1.5">
-                        ⚠️ {error}
+                      <p className="text-xs text-destructive font-bold font-jolly mt-1.5 flex items-center justify-center gap-1.5">
+                        <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
+                        <span>{error}</span>
                       </p>
                     )}
                   </div>
@@ -206,8 +207,9 @@ export function HeroSection({ studentName, onStudentRegister }: HeroSectionProps
                 <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 shadow-inner">
                   <CheckCircle2 className="h-8 w-8 text-emerald-600" />
                 </div>
-                <h3 className="text-2xl font-black font-jolly text-slate-900 mt-1">
-                  Welcome back, {studentName}! 🎉
+                <h3 className="text-2xl font-black font-jolly text-slate-900 mt-1 flex items-center justify-center gap-2">
+                  <span>Welcome back, {studentName}!</span>
+                  <PartyPopper className="h-6 w-6 text-amber-500 shrink-0" />
                 </h3>
               </div>
               <p className="text-xs sm:text-sm text-slate-600 font-medium">
@@ -251,9 +253,10 @@ export function HeroSection({ studentName, onStudentRegister }: HeroSectionProps
                 <DoodleSparkle size={16} color="#a855f7" />
                 <Badge
                   variant="outline"
-                  className="text-xs sm:text-sm font-bold bg-purple-50/90 text-purple-700 border-purple-200 px-3.5 py-1 rounded-full shadow-xs"
+                  className="text-xs sm:text-sm font-bold bg-purple-50/90 text-purple-700 border-purple-200 px-3.5 py-1 rounded-full shadow-xs inline-flex items-center gap-1.5"
                 >
-                  🎈 Learning Modules
+                  <Balloon className="h-4 w-4 text-purple-600" />
+                  <span>Learning Modules</span>
                 </Badge>
                 <DoodleStar size={16} color="#f59e0b" />
               </div>
@@ -297,8 +300,9 @@ export function HeroSection({ studentName, onStudentRegister }: HeroSectionProps
               </div>
 
               <div className="pt-5 mt-4 border-t border-sky-100 flex items-center justify-between">
-                <span className="font-jolly font-bold text-xs sm:text-sm text-blue-600 group-hover:text-blue-700 flex items-center gap-1">
-                  Explore Materials 📖
+                <span className="font-jolly font-bold text-xs sm:text-sm text-blue-600 group-hover:text-blue-700 flex items-center gap-1.5">
+                  <span>Explore Materials</span>
+                  <BookOpen className="h-4 w-4" />
                 </span>
                 <div className="flex h-7 w-7 items-center justify-center rounded-full bg-sky-100 text-sky-700 group-hover:translate-y-0.5 transition-transform">
                   <ArrowDown className="h-3.5 w-3.5" />
@@ -336,8 +340,9 @@ export function HeroSection({ studentName, onStudentRegister }: HeroSectionProps
               </div>
 
               <div className="pt-5 mt-4 border-t border-purple-100 flex items-center justify-between">
-                <span className="font-jolly font-bold text-xs sm:text-sm text-purple-600 group-hover:text-purple-700 flex items-center gap-1">
-                  Watch Videos 🎬
+                <span className="font-jolly font-bold text-xs sm:text-sm text-purple-600 group-hover:text-purple-700 flex items-center gap-1.5">
+                  <span>Watch Videos</span>
+                  <Clapperboard className="h-4 w-4" />
                 </span>
                 <div className="flex h-7 w-7 items-center justify-center rounded-full bg-purple-100 text-purple-700 group-hover:translate-y-0.5 transition-transform">
                   <ArrowDown className="h-3.5 w-3.5" />
@@ -375,8 +380,9 @@ export function HeroSection({ studentName, onStudentRegister }: HeroSectionProps
               </div>
 
               <div className="pt-5 mt-4 border-t border-amber-100 flex items-center justify-between">
-                <span className="font-jolly font-bold text-xs sm:text-sm text-amber-600 group-hover:text-amber-700 flex items-center gap-1">
-                  Open Activities 🎨
+                <span className="font-jolly font-bold text-xs sm:text-sm text-amber-600 group-hover:text-amber-700 flex items-center gap-1.5">
+                  <span>Open Activities</span>
+                  <Palette className="h-4 w-4" />
                 </span>
                 <div className="flex h-7 w-7 items-center justify-center rounded-full bg-amber-100 text-amber-700 group-hover:translate-y-0.5 transition-transform">
                   <ArrowDown className="h-3.5 w-3.5" />

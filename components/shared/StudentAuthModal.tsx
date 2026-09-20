@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { User, ArrowRight, Loader2, BookOpen } from "lucide-react";
+import { User, ArrowRight, Loader2, BookOpen, Smile, Sparkles } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -79,11 +79,13 @@ export function StudentAuthModal({
             alt="Tap2Read Logo"
             className="mx-auto h-16 w-16 object-contain rounded-2xl mb-2 drop-shadow-md"
           />
-          <DialogTitle className="text-2xl font-black font-jolly text-slate-900">
-            What is your name? 😊
+          <DialogTitle className="text-2xl font-black font-jolly text-slate-900 flex items-center justify-center gap-1.5">
+            <span>What is your name?</span>
+            <Smile className="h-6 w-6 text-amber-500" />
           </DialogTitle>
-          <DialogDescription className="text-xs sm:text-sm text-slate-500 mt-1">
-            Type your name below so we can start your reading adventure! 🌟
+          <DialogDescription className="text-xs sm:text-sm text-slate-500 mt-1 flex items-center justify-center gap-1.5">
+            <span>Type your name below so we can start your reading adventure!</span>
+            <Sparkles className="h-4 w-4 text-amber-400 shrink-0" />
           </DialogDescription>
         </DialogHeader>
 
