@@ -307,162 +307,166 @@ export default function AdminVideosPage() {
 
       {/* Add / Edit Dialog */}
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
+        <DialogContent className="sm:max-w-xl max-h-[90vh] flex flex-col p-0 gap-0 overflow-hidden">
+          <DialogHeader className="p-6 pb-4 border-b border-slate-100 shrink-0 pr-14">
             <DialogTitle className="text-xl font-black">
               {editingItem ? "Edit Video" : "Add Educational Video (Max 5)"}
             </DialogTitle>
           </DialogHeader>
 
-          <form onSubmit={handleSave} className="space-y-4 pt-2">
-            <div className="space-y-2">
-              <Label htmlFor="vid-title">Video Title</Label>
-              <Input
-                id="vid-title"
-                placeholder="e.g. Learning Letter Sounds: A to Z"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="vid-desc">Description (Optional)</Label>
-              <Textarea
-                id="vid-desc"
-                rows={3}
-                placeholder="Short description of the reading lesson..."
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </div>
-
-            {/* Video Source Selector */}
-            <div className="space-y-2">
-              <Label>Video Source</Label>
-              <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl border border-slate-200 text-xs font-bold">
-                <button
-                  type="button"
-                  onClick={() => setSourceMode("link")}
-                  className={`py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                    sourceMode === "link"
-                      ? "bg-white text-blue-600 shadow-sm"
-                      : "text-slate-600 hover:text-slate-900"
-                  }`}
-                >
-                  <LinkIcon className="h-3.5 w-3.5" />
-                  YouTube / Video Link
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSourceMode("upload")}
-                  className={`py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                    sourceMode === "upload"
-                      ? "bg-white text-blue-600 shadow-sm"
-                      : "text-slate-600 hover:text-slate-900"
-                  }`}
-                >
-                  <Upload className="h-3.5 w-3.5" />
-                  Upload MP4 File
-                </button>
+          <form onSubmit={handleSave} className="flex flex-col flex-1 min-h-0">
+            <div className="flex-1 overflow-y-auto p-6 space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="vid-title">Video Title</Label>
+                <Input
+                  id="vid-title"
+                  placeholder="e.g. Learning Letter Sounds: A to Z"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  required
+                />
               </div>
 
-              {sourceMode === "link" ? (
-                <div className="space-y-3 pt-1">
-                  <div className="space-y-1.5">
-                    <Input
-                      placeholder="e.g. https://www.youtube.com/watch?v=... or direct MP4 URL"
-                      value={videoUrl}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        setVideoUrl(val);
-                        if (isYouTubeUrl(val)) {
-                          const thumb = getYouTubeThumbnail(val);
-                          if (thumb) setThumbnailUrl(thumb);
-                        } else if (val.includes("cloudinary.com")) {
-                          setThumbnailUrl(val.replace(/\.[^/.]+$/, ".jpg"));
-                        } else {
-                          setThumbnailUrl("");
+              <div className="space-y-2">
+                <Label htmlFor="vid-desc">Description (Optional)</Label>
+                <Textarea
+                  id="vid-desc"
+                  rows={3}
+                  placeholder="Short description of the reading lesson..."
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+              </div>
+
+              {/* Video Source Selector */}
+              <div className="space-y-2">
+                <Label>Video Source</Label>
+                <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl border border-slate-200 text-xs font-bold">
+                  <button
+                    type="button"
+                    onClick={() => setSourceMode("link")}
+                    className={`py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                      sourceMode === "link"
+                        ? "bg-white text-blue-600 shadow-sm"
+                        : "text-slate-600 hover:text-slate-900"
+                    }`}
+                  >
+                    <LinkIcon className="h-3.5 w-3.5" />
+                    YouTube / Video Link
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSourceMode("upload")}
+                    className={`py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                      sourceMode === "upload"
+                        ? "bg-white text-blue-600 shadow-sm"
+                        : "text-slate-600 hover:text-slate-900"
+                    }`}
+                  >
+                    <Upload className="h-3.5 w-3.5" />
+                    Upload MP4 File
+                  </button>
+                </div>
+
+                {sourceMode === "link" ? (
+                  <div className="space-y-3 pt-1">
+                    <div className="space-y-1.5">
+                      <Input
+                        placeholder="e.g. https://www.youtube.com/watch?v=... or direct MP4 URL"
+                        value={videoUrl}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setVideoUrl(val);
+                          if (isYouTubeUrl(val)) {
+                            const thumb = getYouTubeThumbnail(val);
+                            if (thumb) setThumbnailUrl(thumb);
+                          } else if (val.includes("cloudinary.com")) {
+                            setThumbnailUrl(val.replace(/\.[^/.]+$/, ".jpg"));
+                          } else {
+                            setThumbnailUrl("");
+                          }
+                        }}
+                        className="h-10 text-xs"
+                      />
+                      <p className="text-[11px] text-slate-500">
+                        Supports public &amp; unlisted YouTube videos, Vimeo, or direct MP4 URLs. Plays directly inside Tap2Read without leaving the website!
+                      </p>
+                    </div>
+
+                    {isYouTubeUrl(videoUrl) ? (
+                      <div className="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-3 space-y-2">
+                        <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-800">
+                          <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                          <span>Valid YouTube Link Detected (Ready to play inside Tap2Read)</span>
+                        </div>
+                        <div className="relative aspect-video w-full rounded-xl overflow-hidden bg-black shadow-sm">
+                          <iframe
+                            src={getYouTubeEmbedUrl(videoUrl)}
+                            title="Preview"
+                            className="w-full h-full border-0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          />
+                        </div>
+                      </div>
+                    ) : videoUrl.trim() ? (
+                      <div className="rounded-2xl border border-blue-200 bg-blue-50/70 p-3 space-y-2">
+                        <div className="flex items-center justify-between text-xs font-bold text-blue-800">
+                          <span className="flex items-center gap-1.5">
+                            <CheckCircle2 className="h-4 w-4 text-blue-600" />
+                            Video Visual Frame Preview
+                          </span>
+                          <span className="text-[11px] text-blue-600 font-medium">Visual frame of uploaded video</span>
+                        </div>
+                        <div className="relative aspect-video w-full rounded-xl overflow-hidden bg-black shadow-sm flex items-center justify-center">
+                          <video
+                            src={`${videoUrl.trim()}#t=0.5`}
+                            controls
+                            preload="metadata"
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
+                ) : (
+                  <div className="space-y-2 pt-1">
+                    <FileUpload
+                      label="Video File (Cloudinary)"
+                      resourceType="video"
+                      folder="tap2read/videos"
+                      initialUrl={videoUrl}
+                      onSuccess={(url, publicId) => {
+                        setVideoUrl(url);
+                        setVideoPublicId(publicId);
+                        if (url.includes("cloudinary.com")) {
+                          setThumbnailUrl(url.replace(/\.[^/.]+$/, ".jpg"));
                         }
                       }}
-                      className="h-10 text-xs"
                     />
                     <p className="text-[11px] text-slate-500">
-                      Supports public &amp; unlisted YouTube videos, Vimeo, or direct MP4 URLs. Plays directly inside Tap2Read without leaving the website!
+                      Direct Cloudinary upload (for files up to 100 MB). For larger videos, use the YouTube Link tab above.
                     </p>
                   </div>
-
-                  {isYouTubeUrl(videoUrl) ? (
-                    <div className="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-3 space-y-2">
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-800">
-                        <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                        <span>Valid YouTube Link Detected (Ready to play inside Tap2Read)</span>
-                      </div>
-                      <div className="relative aspect-video w-full rounded-xl overflow-hidden bg-black shadow-sm">
-                        <iframe
-                          src={getYouTubeEmbedUrl(videoUrl)}
-                          title="Preview"
-                          className="w-full h-full border-0"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        />
-                      </div>
-                    </div>
-                  ) : videoUrl.trim() ? (
-                    <div className="rounded-2xl border border-blue-200 bg-blue-50/70 p-3 space-y-2">
-                      <div className="flex items-center justify-between text-xs font-bold text-blue-800">
-                        <span className="flex items-center gap-1.5">
-                          <CheckCircle2 className="h-4 w-4 text-blue-600" />
-                          Video Visual Frame Preview
-                        </span>
-                        <span className="text-[11px] text-blue-600 font-medium">Visual frame of uploaded video</span>
-                      </div>
-                      <div className="relative aspect-video w-full rounded-xl overflow-hidden bg-black shadow-sm flex items-center justify-center">
-                        <video
-                          src={`${videoUrl.trim()}#t=0.5`}
-                          controls
-                          preload="metadata"
-                          className="w-full h-full object-contain"
-                        />
-                      </div>
-                    </div>
-                  ) : null}
-                </div>
-              ) : (
-                <div className="space-y-2 pt-1">
-                  <FileUpload
-                    label="Video File (Cloudinary)"
-                    resourceType="video"
-                    folder="tap2read/videos"
-                    initialUrl={videoUrl}
-                    onSuccess={(url, publicId) => {
-                      setVideoUrl(url);
-                      setVideoPublicId(publicId);
-                      if (url.includes("cloudinary.com")) {
-                        setThumbnailUrl(url.replace(/\.[^/.]+$/, ".jpg"));
-                      }
-                    }}
-                  />
-                  <p className="text-[11px] text-slate-500">
-                    Direct Cloudinary upload (for files up to 100 MB). For larger videos, use the YouTube Link tab above.
-                  </p>
-                </div>
-              )}
+                )}
+              </div>
             </div>
 
-            <Button
-              type="submit"
-              className="w-full font-bold h-11"
-              disabled={submitting || !videoUrl.trim()}
-            >
-              {submitting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Saving...
-                </>
-              ) : (
-                "Save Video"
-              )}
-            </Button>
+            <div className="p-4 sm:px-6 border-t border-slate-100 bg-slate-50/50 rounded-b-3xl shrink-0">
+              <Button
+                type="submit"
+                className="w-full font-bold h-11"
+                disabled={submitting || !videoUrl.trim()}
+              >
+                {submitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  "Save Video"
+                )}
+              </Button>
+            </div>
           </form>
         </DialogContent>
       </Dialog>
