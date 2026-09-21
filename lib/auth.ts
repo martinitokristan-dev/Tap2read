@@ -38,6 +38,29 @@ export const authOptions: NextAuthOptions = {
           }
         }
 
+        // Auto-seed: If DB has no teacher at all and default credentials are used, create one
+        if (!teacher) {
+          const allTeachers = await prisma.teacher.findMany();
+          if (allTeachers.length === 0) {
+            const isDefaultEmail =
+              inputEmail === 'teacher@tap2read.com' || inputEmail === 'admin@tap2read.com';
+            const isDefaultPassword =
+              credentials.password === 'tap2read@teacher' || credentials.password === 'tap2read@admin';
+
+            if (isDefaultEmail && isDefaultPassword) {
+              const hashedPassword = await bcrypt.hash('tap2read@teacher', 10);
+              teacher = await prisma.teacher.create({
+                data: {
+                  name: 'Teacher',
+                  email: 'teacher@tap2read.com',
+                  password: hashedPassword,
+                },
+              });
+              console.log('[Auth] Auto-created default teacher account.');
+            }
+          }
+        }
+
         if (!teacher) return null;
 
         let isValid = await bcrypt.compare(credentials.password, teacher.password);
