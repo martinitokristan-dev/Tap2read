@@ -41,6 +41,7 @@ export default function AdminLayout({
   };
 
   useEffect(() => {
+    if (pathname === "/admin/login") return;
     fetchUnreadCount();
     const interval = setInterval(fetchUnreadCount, 15000);
     const handleUpdate = () => fetchUnreadCount();
