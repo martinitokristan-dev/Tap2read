@@ -119,6 +119,7 @@ export default function AdminMessagesPage() {
         threadEndRef.current?.scrollIntoView({ behavior: "smooth" });
       }, 100);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewingItem?.replies?.length, viewingItem?.id]);
 
   const markMessageAsRead = async (id: string) => {

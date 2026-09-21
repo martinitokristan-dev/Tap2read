@@ -31,13 +31,13 @@ export async function GET() {
         isRead: m.isRead ?? false,
         createdAt: m.sentAt.toISOString(),
         sentAt: m.sentAt.toISOString(),
-        replies: (m.replies || []).map((r) => ({
+        replies: ((m as any).replies || []).map((r: any) => ({
           id: String(r.id),
           senderType: r.senderType,
           senderName: r.senderName,
           senderEmail: r.senderEmail,
           content: r.content,
-          sentAt: r.sentAt.toISOString(),
+          sentAt: r.sentAt instanceof Date ? r.sentAt.toISOString() : String(r.sentAt),
         })),
       };
     });
